@@ -1,0 +1,93 @@
+code,description,example,type
+ao0000,Adjective (ordinal),"primera, segundo, últimos",adjective
+aq0000,Adjective (descriptive),"populares, elegido, emocionada, andaluz",adjective
+cc,Conjunction (coordinating),"y, o, pero",Conjunctions
+cs,Conjunction (subordinating),"que, como, mientras",Conjunctions
+da0000,Article (definite),"el, la, los, las",Determiners
+dd0000,Demonstrative,"este, esta, esos",Determiners
+de0000,"""Exclamative"" (TODO)",qué (¡Qué pobre!),Determiners
+di0000,Article (indefinite),"un, muchos, todos, otros",Determiners
+dn0000,Numeral,"tres, doscientas",Determiners
+do0000,Numeral (ordinal),el 65 aniversario,Determiners
+dp0000,Possessive,"sus, mi",Determiners
+dt0000,Interrogative,"cuántos, qué, cuál",Determiners
+f0,Other,"&, @",Punctuation
+faa,Inverted exclamation mark,¡,Punctuation
+fat,Exclamation mark,!,Punctuation
+fc,Comma,",",Punctuation
+fca,Left bracket,[,Punctuation
+fct,Right bracket,],Punctuation
+fd,Colon,:,Punctuation
+fe,Double quote,"""",Punctuation
+fg,Hyphen,-,Punctuation
+fh,Forward slash,/,Punctuation
+fia,Inverted question mark,¿,Punctuation
+fit,Question mark,?,Punctuation
+fp,Period / full-stop,.,Punctuation
+fpa,Left parenthesis,(,Punctuation
+fpt,Right parenthesis,),Punctuation
+fra,Left guillemet / angle quote,«,Punctuation
+frc,Right guillemet / angle quote,»,Punctuation
+fs,Ellipsis,"..., etcétera",Punctuation
+ft,Percent sign,%,Punctuation
+fx,Semicolon,;,Punctuation
+fz,Single quote,,Punctuation
+i,Interjection,"ay, ojalá, hola",Interjections
+Nouns,,,Interjections
+nc00000,"Unknown common noun (neologism, loanword)","minidisc, hooligans, re-flotamiento",Interjections
+nc0n000,Common noun (invariant number),"hipótesis, campus, golf",Interjections
+nc0p000,Common noun (plural),"años, elecciones",Interjections
+nc0s000,Common noun (singular),"lista, hotel, partido",Interjections
+np00000,Proper noun,"Málaga, Parlamento, UFINSA",Interjections
+p0000000,Impersonal se,se,Pronouns
+pd000000,Demonstrative pronoun,"éste, eso, aquellas",Pronouns
+pe000000,"""Exclamative"" pronoun",qué,Pronouns
+pi000000,Indefinite pronoun,"muchos, uno, tanto, nadie",Pronouns
+pn000000,Numeral pronoun,"dos miles, ambos",Pronouns
+pp000000,Personal pronoun,"ellos, lo, la, nos",Pronouns
+pr000000,Relative pronoun,"que, quien, donde, cuales",Pronouns
+pt000000,Interrogative pronoun,"cómo, cuánto, qué",Pronouns
+px000000,Possessive pronoun,"tuyo, nuestra",Pronouns
+rg,Adverb (general),"siempre, más, personalmente",Adverbs
+rn,Adverb (negating),no,Adverbs
+sp000,Preposition,"en, de, entre",Prepositions
+va00000,Verb (unknown),should,Verbs
+vag0000,"Verb (auxiliary, gerund)",habiendo,Verbs
+vaic000,"Verb (auxiliary, indicative, conditional)","habría, habríamos",Verbs
+vaif000,"Verb (auxiliary, indicative, future)","habrá, habremos",Verbs
+vaii000,"Verb (auxiliary, indicative, imperfect)","había, habíamos",Verbs
+vaip000,"Verb (auxiliary, indicative, present)","ha, hemos",Verbs
+vais000,"Verb (auxiliary, indicative, preterite)","hubo, hubimos",Verbs
+vam0000,"Verb (auxiliary, imperative)",haya,Verbs
+van0000,"Verb (auxiliary, infinitive)",haber,Verbs
+vap0000,"Verb (auxiliary, participle)",habido,Verbs
+vasi000,"Verb (auxiliary, subjunctive, imperfect)","hubiera, hubiéramos, hubiese",Verbs
+vasp000,"Verb (auxiliary, subjunctive, present)","haya, hayamos",Verbs
+vmg0000,"Verb (main, gerund)","dando, trabajando",Verbs
+vmic000,"Verb (main, indicative, conditional)","daría, trabajaríamos",Verbs
+vmif000,"Verb (main, indicative, future)","dará, trabajaremos",Verbs
+vmii000,"Verb (main, indicative, imperfect)","daba, trabajábamos",Verbs
+vmip000,"Verb (main, indicative, present)","da, trabajamos",Verbs
+vmis000,"Verb (main, indicative, preterite)","dio, trabajamos",Verbs
+vmm0000,"Verb (main, imperative)","da, dé, trabaja, trabajes, trabajemos",Verbs
+vmn0000,"Verb (main, infinitive)","dar, trabjar",Verbs
+vmp0000,"Verb (main, participle)","dado, trabajado",Verbs
+vmsi000,"Verb (main, subjunctive, imperfect)","diera, diese, trabajáramos, trabajésemos",Verbs
+vmsp000,"Verb (main, subjunctive, present)","dé, trabajemos",Verbs
+vsg0000,"Verb (semiauxiliary, gerund)",siendo,Verbs
+vsic000,"Verb (semiauxiliary, indicative, conditional)","sería, serían",Verbs
+vsif000,"Verb (semiauxiliary, indicative, future)","será, seremos",Verbs
+vsii000,"Verb (semiauxiliary, indicative, imperfect)","era, éramos",Verbs
+vsip000,"Verb (semiauxiliary, indicative, present)","es, son",Verbs
+vsis000,"Verb (semiauxiliary, indicative, preterite)","fue, fuiste",Verbs
+vsm0000,"Verb (semiauxiliary, imperative)","sea, sé",Verbs
+vsn0000,"Verb (semiauxiliary, infinitive)",ser,Verbs
+vsp0000,"Verb (semiauxiliary, participle)",sido,Verbs
+vssf000,"Verb (semiauxiliary, subjunctive, future)",fuere,Verbs
+vssi000,"Verb (semiauxiliary, subjunctive, imperfect)","fuera, fuese, fuéramos",Verbs
+vssp000,"Verb (semiauxiliary, subjunctive, present)","sea, seamos",Verbs
+w,Date,"octubre, jueves, 2002",Dates
+z0,Numeral,"547.000, 04, 52,52",Numerals
+zm,Numeral qualifier (currency),"dólares, euros",Numerals
+zu,Numeral qualifier (other units),"km, cc",Numerals
+word,Emoticon or other symbol,":), ®",Other
