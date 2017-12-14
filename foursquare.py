@@ -65,6 +65,7 @@ def get_venue_features(venue_id):
     v = data_desc['response']['venue']
     v_hours = data_hours['response']['popular']['timeframes']
     venues["id"]=venue_id
+    venues["Nombre"] = v.get('name')
     venues["Dirección"]= str(v.get('location').get('address'))+", "+str(v.get('location').get('city'))+", "+v.get('location').get('country')
     venues["Rating"]=str(v.get('rating'))
     venues["Página Web"]=v.get('url')
