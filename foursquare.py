@@ -1,3 +1,4 @@
+# coding=utf-8
 import json, requests
 
 def get_venues_by_category_and_ll(categoria, latitud, longitud):
@@ -63,6 +64,7 @@ def get_venue_features(venue_id):
     venues = {}
     v = data_desc['response']['venue']
     v_hours = data_hours['response']['popular']['timeframes']
+    venues["id"]=venue_id
     venues["Dirección"]= str(v.get('location').get('address'))+", "+str(v.get('location').get('city'))+", "+v.get('location').get('country')
     venues["Rating"]=str(v.get('rating'))
     venues["Página Web"]=v.get('url')
@@ -72,7 +74,13 @@ def get_venue_features(venue_id):
             str_attrb = str_attrb + " " + item.get('displayValue')
         venues[attr.get('name')] = str_attrb
     venues["Teléfono"]=v.get('contact').get('phone')
-    print(v_hours)
+    venues["Horarios"]={}
+    for day in v_hours['days']:
+
+        str_horario = ''
+        for horario in day['open']:
+            str_horario = horario['start'] + "-" + horario['end'] + ", "
+
     return venues
 
 def get_venue_tips(venue_id):
