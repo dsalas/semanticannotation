@@ -20,14 +20,12 @@ def get_venues_by_category_and_ll(categoria, latitud, longitud):
     )
     resp = requests.get(url=url, params=params)
     data = json.loads(resp.text)
-    venues = {}
-    count = 0
+    venues = []
     for venue in data['response']['venues']:
         d_venue = {}
         d_venue['id']=venue['id']
         d_venue['name']=venue['name']
-        venues[str(count)] = d_venue
-        count = count + 1
+        venues.append(d_venue)
     return venues
 
 def get_venues_by_name(venue_name):
@@ -62,18 +60,19 @@ def get_venue_features(venue_id):
     resp_menu = requests.get(url=url_menu, params=params)
     data_desc = json.loads(resp_desc.text)
     data_hours = json.loads(resp_hours.text)
-    data_menu = json.loads(resp_menu.text)
     venues = {}
     v = data_desc['response']['venue']
-    print("Dirección: "+v.get('location').get('address')+", "+v.get('location').get('city')+", "+v.get('location').get('country'))
-    print("Rating: "+str(v.get('rating')))
-    print("Página Web: "+v.get('url'))
+    v_hours = data_hours['response']['popular']['timeframes']
+    venues["Dirección"]= str(v.get('location').get('address'))+", "+str(v.get('location').get('city'))+", "+v.get('location').get('country')
+    venues["Rating"]=str(v.get('rating'))
+    venues["Página Web"]=v.get('url')
     for attr in v.get('attributes').get('groups'):
-        str_attrb = attr.get('name') + ": "
+        str_attrb =  ""
         for item in attr.get('items'):
             str_attrb = str_attrb + " " + item.get('displayValue')
-        print(str_attrb)
-    print("Teléfono: "+v.get('contact').get('phone'))
+        venues[attr.get('name')] = str_attrb
+    venues["Teléfono"]=v.get('contact').get('phone')
+    print(v_hours)
     return venues
 
 def get_venue_tips(venue_id):
