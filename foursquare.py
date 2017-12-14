@@ -1,3 +1,4 @@
+# coding=utf-8
 import json, requests
 
 def get_venues_by_category_and_ll(categoria, latitud, longitud):
