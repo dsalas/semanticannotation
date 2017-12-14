@@ -74,13 +74,28 @@ def get_venue_features(venue_id):
             str_attrb = str_attrb + " " + item.get('displayValue')
         venues[attr.get('name')] = str_attrb
     venues["Teléfono"]=v.get('contact').get('phone')
-    #venues["Horarios"]={}
-    #for day in v_hours['days']:
+    horarios = {}
+    for day in v_hours:
+        str_horario = ''
+        flg = 1
+        for horario in day['open']:
+            if flg == 1:
+                str_horario = horario['start'] + "-" + horario['end']
+                flg = 0
+            else:
+                str_horario = str_horario + ", "+ horario['start'] + "-" + horario['end']
+        switcher = {
+            "1": "Lunes",
+            "2": "Martes",
+            "3": "Miércoles",
+            "4": "Jueves",
+            "5": "Viernes",
+            "6": "Sábado",
+            "7": "Domingo"
+        }
 
-    #    str_horario = ''
-    #    for horario in day['open']:
-    #        str_horario = horario['start'] + "-" + horario['end'] + ", "
-
+        horarios[switcher.get(str(day['days'][0]),"nothing")]= str_horario
+    venues["Horarios"] = horarios
     return venues
 
 def get_venue_tips(venue_id):

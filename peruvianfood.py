@@ -22,6 +22,8 @@ def scrap_yanuq():
     s1_strips = [s.replace(u'\x93A', u'') for s in s1_strips]
     s1_strips = [s.replace(u'\x93', u'') for s in s1_strips]
     s1_strips = [s.replace(u'\x94', u'') for s in s1_strips]
+    s1_strips = [s.lower() for s in s1_strips]
+    s1_strips = [s.strip() for s in s1_strips]
     #print log of urls scrapped
     print(s1_url)
     return s1_strips
@@ -53,6 +55,9 @@ def scrap_enjoyperu():
             s2_list_url.append(nexturl[0])
         # print log of urls scrapped
         print(url)
+    # preprocessing
+    s2_strips_accum = [s.lower() for s in s2_strips_accum]
+    s2_strips_accum = [s.strip() for s in s2_strips_accum]
     return s2_strips_accum
           
 def scrap_cocinaperu():
@@ -76,6 +81,9 @@ def scrap_cocinaperu():
         s3_strips_accum = s3_strips_accum + s3_strips
         # print log of urls scrapped
         print(url)
+    # preprocessing
+    s3_strips_accum = [s.lower() for s in s3_strips_accum]
+    s3_strips_accum = [s.strip() for s in s3_strips_accum]
     return s3_strips_accum
 
 def scrap_wikipedia():
@@ -85,11 +93,12 @@ def scrap_wikipedia():
     s4_webpage = s4_request.read()
     s4_htmltext = s4_webpage.decode('utf-8')
     s4_strips = re.findall('<li><a href="\/w\/index\.php\?title.*?>(.+?)<', s4_htmltext, flags=re.S)
+    # preprocessing
+    s4_strips = [s.lower() for s in s4_strips]
+    s4_strips = [s.strip() for s in s4_strips]
     # print log of urls scrapped
     print(s4_url)
     return s4_strips
-   
-        
 
 def scrap_peruvian_food():
     #scrap 4 sources of peruvian food and drinks
@@ -107,8 +116,15 @@ def scrap_peruvian_food():
     perfydcorpus.close()
     print("Número de platos y bebidas extraídos: " + str(len(all_strips)))
 
-def find_peruvian_dish_drink():
-    print("developing")
+def find_peruvian_dish_drink(food):
+    perfydcorpus = open('perfydcorpus.txt', 'rb')
+    corpus = pickle.load(perfydcorpus)
+    match = [True for food in corpus]
+    perfydcorpus.close()
+
+scrap_peruvian_food()
+food = ['arroz con pollo','']
+find_peruvian_dish_drink("arroz con pollo")
 
 
 
