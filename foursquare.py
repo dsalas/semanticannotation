@@ -74,12 +74,12 @@ def get_venue_features(venue_id):
             str_attrb = str_attrb + " " + item.get('displayValue')
         venues[attr.get('name')] = str_attrb
     venues["Teléfono"]=v.get('contact').get('phone')
-    venues["Horarios"]={}
-    for day in v_hours['days']:
+    #venues["Horarios"]={}
+    #for day in v_hours['days']:
 
-        str_horario = ''
-        for horario in day['open']:
-            str_horario = horario['start'] + "-" + horario['end'] + ", "
+    #    str_horario = ''
+    #    for horario in day['open']:
+    #        str_horario = horario['start'] + "-" + horario['end'] + ", "
 
     return venues
 
