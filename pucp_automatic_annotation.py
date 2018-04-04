@@ -32,11 +32,10 @@ def _createSet(tagged_results):
             concepts.add(element[0])
     return concepts
 
-def _createOntology(concepts):
+def createOntology(document, concepts):
     onto = get_ontology("http://test.org/test_ontology.owl")
     class Document(Thing):
         namespace = onto
-    return ""
 
     class Concept(Thing):
         namespace = onto
@@ -52,12 +51,12 @@ def _createOntology(concepts):
         range = [Document]
         inverse_property = documentHasConcept
 
-    documentTest = Document("document_test")
+    documentTest = Document(document)
     for concept in concepts:
         ontoConcept = Concept(concept)
         documentTest.documentHasConcept.append(ontoConcept)
-
-    onto.save(file="annotated.owl", format="rdfxml")
+    onto_file = open("/var/www/pyapi/scripts/persist/ontology.owl", 'wb+')
+    onto.save(file=onto_file, format="rdfxml")
 
 def anotate (filename, path):
     text = _getText(path)
