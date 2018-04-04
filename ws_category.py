@@ -39,13 +39,13 @@ def getRecomendation(dictionary, fname):
 	return "{\"error\":\"Place not found.\"}"
 
 def saveJson(dictionary, fname):
-    with io.open(fname, 'w', encoding='utf-8') as f:
-        f.write(json.dumps(dictionary, ensure_ascii=False))	
+	with io.open(fname, 'w', encoding='utf-8') as f:
+        	f.write(json.dumps(dictionary, ensure_ascii=False))	
 
 def loadJson(fname):
-    with open(fname) as json_data:
-        d = json.load(json_data)
-        return d #print(d)
+    	with open(fname) as json_data:
+        	d = json.load(json_data)
+        	return d #print(d)
 
 def service(request_body):
 	dictionary = parse_qs(request_body)

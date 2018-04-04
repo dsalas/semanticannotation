@@ -2,6 +2,9 @@ from cgi import parse_qs, escape
 import json
 import os 
 import io
+import sys
+sys.path.append('/var/www/pyapi/scripts')
+from pucp_automatic_annotation import anotate
 #params:
 #data list
 #
@@ -21,5 +24,8 @@ def service(request_body):
 		filename = file.name
 	except IOError as e:
 		error = e.strerror
-	dictionary = {'Created': filename, 'Error': error, 'Extra': extra}
+	documentName = "test"
+	dictionary = anotate(documentName,filename)
+		
+	#dictionary = {'Created': filename, 'Error': error, 'Extra': extra}
 	return json.dumps(dictionary)
