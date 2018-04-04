@@ -62,7 +62,7 @@ def _createOntology(concepts):
 def anotate (filename, path):
     text = _getText(path)
     cleaned = _clean(text)
-    tagged_results = tagging_implementation.test(cleaned)
+    tagged_results = tagging_implementation.tag(cleaned)
     concepts = _createSet(tagged_results)
     result = {'document': filename, 'concepts': list(concepts)}
     return result

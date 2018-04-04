@@ -19,3 +19,7 @@ def _tagging(data):
     spanish_postagger = StanfordPOSTagger('spanish.tagger', '/home/jedda/scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar')
     tagged = spanish_postagger.tag(data.split())
     return _describe_stanford_pos_tag(tagged)
+
+def tag(data):
+    result = _tagging(data)
+    return result
