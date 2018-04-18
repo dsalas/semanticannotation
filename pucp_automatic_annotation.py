@@ -52,9 +52,10 @@ def createBaseOntology(filename, filepath):
         domain = [Concept]
         range = [Document]
         inverse_property = documentHasConcept
-        
+
     onto_file = open(filepath + filename + ".owl", 'wb+')
     onto.save(file=onto_file, format="rdfxml")
+    return onto_file.name
 
 def createOntology(document, concepts):
     onto = get_ontology(config.OntologyNamespace + "test_ontology.owl")
