@@ -4,6 +4,8 @@ import nltk
 import tagging_implementation
 from owlready2 import *
 import json
+sys.path.append('/var/www/pyapi/scripts')
+import config
 
 def _getText(filename):
     text = textract.process(filename, method='pdfminer')
@@ -32,8 +34,30 @@ def _createSet(tagged_results):
             concepts.add(element[0])
     return concepts
 
+def createBaseOntology(filename, filepath):
+    onto = get_ontology(config.OntologyNamespace + filename + ".owl")
+    class Document(Thing):
+        namespace = onto
+
+    class Concept(Thing):
+        namespace = onto
+
+    class documentHasConcept(ObjectProperty):
+        namespace = onto
+        domain = [Document]
+        range = [Concept]
+
+    class conceptInDocument(ObjectProperty):
+        namespace = onto
+        domain = [Concept]
+        range = [Document]
+        inverse_property = documentHasConcept
+        
+    onto_file = open(filepath + filename + ".owl", 'wb+')
+    onto.save(file=onto_file, format="rdfxml")
+
 def createOntology(document, concepts):
-    onto = get_ontology("http://test.org/test_ontology.owl")
+    onto = get_ontology(config.OntologyNamespace + "test_ontology.owl")
     class Document(Thing):
         namespace = onto
 
