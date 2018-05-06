@@ -10,15 +10,16 @@ from pucp_automatic_annotation import createBaseOntology
 
 
 # params:
-# data list
+# filepath
+# concept list
 #
 
 def service(request_body):
     body = urllib.parse.parse_qs(request_body)
-    filename = body['filename'][0]
-    filepath = config.OntologyDir
-    result = createBaseOntology(filename,filepath)
+    filepath = body['filepath'][0]
+    concepts = body['concepts']
+    #result = createBaseOntology(filename,filepath)
     error = "none"
     extra = ""
-    dictionary = {'filepath': result, 'error': error, 'extra': extra}
+    dictionary = {'concepts': concepts, 'error': error, 'extra': extra}
     return json.dumps(dictionary)
