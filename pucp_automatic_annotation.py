@@ -90,3 +90,14 @@ def anotate (filename, path):
     concepts = _createSet(tagged_results)
     result = {'document': filename, 'concepts': list(concepts)}
     return result
+
+def addConceptsToOntology(path, concepts):
+    onto = get_ontology("file://" + path)
+    onto.load()
+    class Concept(Thing):
+        namespace = onto
+    for concept in concepts:
+        Concept(concept)
+    onto_file = open(path, 'wb+')
+    onto.save(file=onto_file, format="rdfxml")
+    return True
