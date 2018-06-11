@@ -4,6 +4,8 @@ import nltk
 import tagging_implementation
 from owlready2 import *
 import json
+import time
+import os
 sys.path.append('/var/www/pyapi/scripts')
 import config
 
@@ -83,7 +85,7 @@ def createOntology(document, concepts):
     onto_file = open("/var/www/pyapi/scripts/persist/ontology.owl", 'wb+')
     onto.save(file=onto_file, format="rdfxml")
 
-def anotate (filename, path):
+def anotate(filename, path):
     text = _getText(path)
     cleaned = _clean(text)
     tagged_results = tagging_implementation.tag(cleaned)
@@ -99,5 +101,61 @@ def addConceptsToOntology(path, concepts):
     for concept in concepts:
         Concept(concept)
     onto_file = open(path, 'wb+')
-    onto.save(file=onto_file, format="rdfxml")
-    return True
+    try:
+        onto.save(file=onto_file, format="rdfxml")
+        return True
+    except:
+        return False
+
+def addDocumentConceptsToOntology(docid, path, concepts):
+    onto = get_ontology("file://" + path)
+    onto.load()
+    class Concept(Thing):
+        namespace = onto
+    class Document(Thing):
+        namespace = onto
+    currentDocument = Document(docid)
+    class documentHasConcept(ObjectProperty):
+        namespace = onto
+        domain = [Document]
+        range = [Concept]
+    for concept in concepts:
+        currentConcept = Concept(concept)
+        currentDocument.documentHasConcept.append(currentConcept)
+    onto_file = open(path, 'wb+')
+    try:
+        onto.save(file=onto_file, format="rdfxml")
+        return True
+    except:
+        return False
+
+def annotateDocumentInPath(path, ontopath):
+    text = _getText(path)
+    cleaned = _clean(text)
+    tagged_results = tagging_implementation.tag(cleaned)
+    concepts = _createSet(tagged_results)
+    docid = saveFileToBd(path)
+    status = addDocumentConceptsToOntology(docid, ontopath, concepts)
+    return status
+
+def annotateDocumentsInPath(path, ontopath):
+    files = [f for f in os.listdir(path) if os.path.isfile(path + "/" + f)]
+    files = filter(lambda f: f.endswith(('.pdf', '.PDF')), files)
+    status = {}
+    for file in files:
+        filepath = path + "/" + file
+        filestatus = annotateDocumentInPath(filepath, ontopath)
+        status[filepath] = filestatus
+    return status
+
+def saveFileToBd(path):
+    ts = round(time.time())
+    return ts
+
+
+def annotateDocumentInPath(path, ontopath):
+    text = _getText(path)
+    cleaned = _clean(text)
+    tagged_results = tagging_implementation.tag(cleaned)
+    concepts = _createSet(tagged_results)
+    addConceptsToOntology(ontopath, concepts)
