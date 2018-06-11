@@ -6,7 +6,7 @@ import sys
 
 sys.path.append('/var/www/pyapi/scripts')
 import config
-from pucp_automatic_annotation import createBaseOntology
+from pucp_automatic_annotation import addConceptsToOntology
 
 
 # params:
@@ -18,8 +18,12 @@ def service(request_body):
     body = urllib.parse.parse_qs(request_body)
     filepath = body['filepath'][0]
     concepts = body['concepts']
-    #result = createBaseOntology(filename,filepath)
-    error = "none"
+    result = addConceptsToOntology(filepath,concepts)
+    status = 0
+    error = "No se pudo crear los conceptos en la ruta " + filepath
+    if result:
+       status = 1
+       error = "none"
     extra = ""
-    dictionary = {'concepts': concepts, 'error': error, 'extra': extra}
+    dictionary = {'status': status, 'error': error, 'extra': extra}
     return json.dumps(dictionary)
