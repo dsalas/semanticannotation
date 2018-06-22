@@ -8,6 +8,7 @@ import time
 import os
 sys.path.append('/var/www/pyapi/scripts')
 import config
+import editdistance
 
 def _getText(filename):
     text = textract.process(filename, method='pdfminer')
@@ -54,6 +55,11 @@ def createBaseOntology(filename, filepath):
         domain = [Concept]
         range = [Document]
         inverse_property = documentHasConcept
+
+#    class hasId(DataProperty,FunctionalProperty):
+#        namespace = onto
+#        domain = [Document]
+#        range = [int]
 
     onto_file = open(filepath + filename + ".owl", 'wb+')
     onto.save(file=onto_file, format="rdfxml")
@@ -159,3 +165,34 @@ def annotateDocumentInPath(path, ontopath):
     tagged_results = tagging_implementation.tag(cleaned)
     concepts = _createSet(tagged_results)
     addConceptsToOntology(ontopath, concepts)
+
+def getDocumentsFromOntology(query_concepts):
+    path = "./persist/ontology/test.owl"
+    onto = get_ontology("file://" + path)
+    onto.load()
+    with onto:
+        sync_reasoner()
+    concepts = onto.search(is_a = onto.Concept)
+    scores = []
+    for concept in concepts:
+        score = -1
+        for token in query_concepts:
+            if score == -1:
+                score = editdistance.eval(concept.name, token)
+            else:
+                score = min(score, editdistance.eval(concept.name, token))
+        scores.append((score, concept))
+    lowest_scores = list(filter(lambda x: x[0] < 3, scores))
+    result = {"documents":[]}
+    for score in lowest_scores:
+        concept = score[1]
+        documents = concept.conceptInDocument
+        for document in documents:
+            result["documents"].append((document.name))
+    return result
+
+def getDocuments(query):
+    cleaned = _clean(query)
+    tagged_results = tagging_implementation.tag(cleaned)
+    query_concepts = _createSet(tagged_results)
+    return getDocumentsFromOntology(query_concepts)
