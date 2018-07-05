@@ -9,6 +9,7 @@ import os
 sys.path.append('/var/www/pyapi/scripts')
 import config
 import editdistance
+import pandas as pd
 
 def _getText(filename):
     text = textract.process(filename, method='pdfminer')
@@ -145,6 +146,14 @@ def annotateDocumentInPath(path, ontopath):
     return status
 
 def annotateDocumentsInPath(path, ontopath):
+    from nltk.tag import StanfordPOSTagger
+    os.environ["STANFORD_MODELS"] = "/Users/DIA/Documents/Diego/Maestría/MW/Chatbot/stanford-postagger-full-2017-06-09/models"
+    lemmaDict = pd.read_csv('lemmatization-es.txt', sep="\t", header=None)
+    lemmaDict = pd.read_csv('lemmatization-es.txt', sep="\t", header=None)
+    lemmaDict.columns = ["lemma", "token"]
+    maxWordDistance = 2
+    spanish_postagger = StanfordPOSTagger('spanish.tagger', 'stanford-postagger-full-2017-06-09/stanford-postagger.jar')
+    posTagDescDf = pd.read_csv("./Stanford_POS_Tags.csv")
     files = [f for f in os.listdir(path) if os.path.isfile(path + "/" + f)]
     files = filter(lambda f: f.endswith(('.pdf', '.PDF')), files)
     status = {}
