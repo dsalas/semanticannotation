@@ -15,8 +15,8 @@ def _describe_stanford_pos_tag(tagged):
     return result
 
 def _tagging(data):
-    os.environ["STANFORD_MODELS"] = "/home/jedda/scpDocs/stanford-postagger-full-2017-06-09/models"
-    spanish_postagger = StanfordPOSTagger('spanish.tagger', '/home/jedda/scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar')
+    os.environ["STANFORD_MODELS"] = "/var/www/pyapi/scpDocs/stanford-postagger-full-2017-06-09/models"
+    spanish_postagger = StanfordPOSTagger('spanish.tagger', '/var/www/pyapi/scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar')
     tagged = spanish_postagger.tag(data.split())
     return _describe_stanford_pos_tag(tagged)
 

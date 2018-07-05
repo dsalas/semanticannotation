@@ -61,10 +61,11 @@ def createBaseOntology(filename, filepath):
 #        namespace = onto
 #        domain = [Document]
 #        range = [int]
-
-    onto_file = open(filepath + filename + ".owl", 'wb+')
+    filenameOwl = filename + ".owl"
+    uri = config.OntologyNamespace
+    onto_file = open(filepath + filenameOwl, 'wb+')
     onto.save(file=onto_file, format="rdfxml")
-    return onto_file.name
+    return onto_file.name, filenameOwl, uri
 
 def createOntology(document, concepts):
     onto = get_ontology(config.OntologyNamespace + "test_ontology.owl")
