@@ -17,8 +17,11 @@ def service(request_body):
     body = urllib.parse.parse_qs(request_body)
     filename = body['filename'][0]
     filepath = config.OntologyDir
-    result = createBaseOntology(filename,filepath)
+    status = 1
+    result,filename,url = createBaseOntology(filename,filepath)
+    if not result:
+        status = 0
     error = "none"
     extra = ""
-    dictionary = {'filepath': result, 'error': error, 'extra': extra}
+    dictionary = {'filepath': result, 'error': error, 'extra': extra, 'url': url,'filename':filename,'status':status}
     return json.dumps(dictionary)

@@ -1,7 +1,9 @@
 import configparser
+import os
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+config_file = os.path.join(os.path.dirname(__file__), 'config.ini')
+config.read(config_file)
 
 RootDir = config['DEFAULT']['RootDir']#'/var/www/pyapi/scripts/'
 OntologyDir = RootDir + config['DEFAULT']['OntologyDir']#'persist/ontology/'
