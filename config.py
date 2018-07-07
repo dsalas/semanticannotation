@@ -8,7 +8,7 @@ config.read(config_file)
 RootDir = config['DEFAULT']['RootDir']#'/var/www/pyapi/scripts/'
 OntologyDir = RootDir + config['DEFAULT']['OntologyDir']#'persist/ontology/'
 OntologyNamespace = config['DEFAULT']['OntologyNamespace']#"http://test.org/"
-LogDir = config['DEFAULT']['LogDir']#persist/log/
+LogDir = RootDir + config['DEFAULT']['LogDir']#persist/log/
 
 def editOntologyNamespace(namespace):
     config.read('config.ini')

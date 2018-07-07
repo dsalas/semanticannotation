@@ -219,12 +219,12 @@ def processOntodict(ontodict, ontopath):
 def annotateDocumentsInPath(path, ontopath):
     log("Call to annotateDocumentsInPath()")
     from nltk.tag import StanfordPOSTagger
-    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), '../stanford-postagger-full-2017-06-09/models')
-    lemmaDict = pd.read_pickle('lemmatization-es.pkl')
+    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), '../scpDocs/stanford-postagger-full-2017-06-09/models')
+    lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
     lemmaDict.columns = ["lemma", "token"]
     maxWordDistance = 2
-    spanish_postagger = StanfordPOSTagger('spanish.tagger', '../stanford-postagger-full-2017-06-09/stanford-postagger.jar')
-    posTagDescDf = pd.read_csv("./Stanford_POS_Tags.csv")
+    spanish_postagger = StanfordPOSTagger('spanish.tagger',os.path.join(os.path.dirname(__file__), '../scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
+    posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
     files = [f for f in os.listdir(path) if os.path.isfile(path + "/" + f)]
     files = filter(lambda f: f.endswith(('.pdf', '.PDF')), files)
     status = {}

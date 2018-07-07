@@ -21,15 +21,16 @@ def service(request_body):
     error = "Incorrect type."
     extra = "Current type: " + type
     #TODO: Get activie ontologies from bd
-    ontopath = config.OntologyDir + "onto.owl"
+    ontopath = config.OntologyDir + "coruja_test.owl"
     if (type == '0'):
-        filepath = body['filepath'][0]
+        filepath = body['source'][0]
         status = annotateDocumentsInPath(filepath,ontopath)
     if (type == '1'):
-        filepath = body['filepath'][0]
+        filepath = body['source'][0]
         status = annotateDocumentInPath(filepath, ontopath)
     if (type == '2'):
         #TODO: Get document path from BD using docid
+        docid = body['source'][0]
         status = 1
     dictionary = {'status': status, 'error': error, 'extra': extra}
     return json.dumps(dictionary)
