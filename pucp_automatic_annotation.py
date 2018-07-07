@@ -213,9 +213,9 @@ def processOntodict(ontodict, ontopath):
         ontoclass = classkey.title()
         with onto:
             NewClass = types.new_class(ontoclass, (Concept,), kwds={})
-        for elem in classelem:
-            NewClass(elem)
-
+            for elem in classelem:
+                NewClass(elem)
+                
     class documentHasConcept(ObjectProperty):
         namespace = onto
         domain = [Document]
