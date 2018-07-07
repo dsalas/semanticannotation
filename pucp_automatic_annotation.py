@@ -307,5 +307,3 @@ def getDocuments(query):
     #TODO get ontologies from bd
     ontopath = "./persist/ontology/coruja_test.owl"
     return processQuery(query, ontopath)
-
-annotateDocumentsInPath("./persist/debug/test_docs/pc_test", "./persist/ontology/nuclear_option.owl")
