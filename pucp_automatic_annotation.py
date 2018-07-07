@@ -171,6 +171,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
         i=i+1
 
 def processOntodict(ontodict, ontopath):
+    log("Call to processOntodict()")
     onto = get_ontology("file://" + ontopath)
     onto.load()
 
@@ -187,7 +188,7 @@ def processOntodict(ontodict, ontopath):
         with onto:
             NewClass = types.new_class(ontoclass, (Concept,), kwds={})
             for elem in classelem:
-                NewClass(elem)
+                NewClass(elem.lower())
 
     class documentHasConcept(ObjectProperty):
         namespace = onto
@@ -214,11 +215,11 @@ def processOntodict(ontodict, ontopath):
 def annotateDocumentsInPath(path, ontopath):
     log("Call to annotateDocumentsInPath()")
     from nltk.tag import StanfordPOSTagger
-    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), '../scpDocs/stanford-postagger-full-2017-06-09/models')
+    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/models')
     lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
     lemmaDict.columns = ["lemma", "token"]
     maxWordDistance = 2
-    spanish_postagger = StanfordPOSTagger('spanish.tagger',os.path.join(os.path.dirname(__file__), '../scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
+    spanish_postagger = StanfordPOSTagger('spanish.tagger',os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
     posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
     files = [f for f in os.listdir(path) if os.path.isfile(path + "/" + f)]
     files = filter(lambda f: f.endswith(('.pdf', '.PDF')), files)
@@ -251,7 +252,6 @@ def annotateDocumentsInPath(path, ontopath):
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][satellite[1]] = set(validNeighbor)
-    #print(ontoDictFinal)
     processOntodict(ontoDictFinal, ontopath)
     return status
 
@@ -280,7 +280,6 @@ def getDocumentsFromOntology(concepts, ontopath):
     for concept in ontoconcepts:
         score = -1
         for token in concepts:
-            print(concept.name, token)
             if score == -1:
                 score = editdistance.eval(concept.name, token)
             else:
