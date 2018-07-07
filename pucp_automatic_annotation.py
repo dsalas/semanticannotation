@@ -305,5 +305,5 @@ def processQuery(query,ontopath):
 
 def getDocuments(query):
     #TODO get ontologies from bd
-    ontopath = "./persist/ontology/coruja_test.owl"
+    ontopath = os.path.join(os.path.dirname(__file__), "persist/ontology/coruja_test.owl")
     return processQuery(query, ontopath)
