@@ -301,7 +301,3 @@ def getDocuments(query):
     tagged_results = tagging_implementation.tag(cleaned)
     query_concepts = _createSet(tagged_results)
     return getDocumentsFromOntology(query_concepts)
-
-
-path = os.path.join(os.path.dirname(__file__), 'persist/debug/test_docs/pc_test')
-annotateDocumentsInPath(path,"./persist/ontology/nuclear_option.owl")
