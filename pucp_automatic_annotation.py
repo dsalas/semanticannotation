@@ -33,12 +33,34 @@ def _clean(text):
     result = " ".join(clean_words)
     return result
 
-def _createSet(tagged_results):
+def _cleanQuery(text):
+    table = str.maketrans("","",string.punctuation)
+    clean = text.translate(table)
+    words = clean.split(" ")
+    words = list(filter(lambda x: len(x) > 2, words))
+    clean_words = []
+    stopwords = set(nltk.corpus.stopwords.words('spanish'))
+    for word in words:
+        if word.isalpha():
+            if not word.lower() in stopwords:
+                clean_words.append(word)
+    result = " ".join(clean_words)
+    return result
+
+def _createList(tagged_results):
     concepts = []
     for element in tagged_results:
         if element[2] == "Interjections":
             concepts.append(element[0])
     return concepts
+
+def _createSet(clean):
+    concepts = set([])
+    for element in clean.split(" "):
+        concepts.add(element)
+    return concepts
+
+
 
 def createBaseOntology(filename, filepath):
     onto = get_ontology(config.OntologyNamespace + filename + ".owl")
@@ -136,7 +158,7 @@ def annotateDocumentInPath(path, ontopath):
     text = _getText(path)
     cleaned = _clean(text)
     tagged_results = tagging_implementation.tag(cleaned)
-    concepts = _createSet(tagged_results)
+    concepts = _createList(tagged_results)
     docid = saveFileToBd(path)
     status = addDocumentConceptsToOntology(docid, ontopath, concepts)
     return status
@@ -145,7 +167,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
     text = _getText(filepath)
     cleaned = _clean(text)
     tagged = tagging_implementation.tag(cleaned, df, spanish_postagger)
-    concepts = _createSet(tagged)
+    concepts = _createList(tagged)
     i=0
     for concept in concepts:
         startIndex = i-maxWordDistance
@@ -268,36 +290,48 @@ def annotateDocumentInPath(path, ontopath):
     text = _getText(path)
     cleaned = _clean(text)
     tagged_results = tagging_implementation.tag(cleaned)
-    concepts = _createSet(tagged_results)
+    concepts = _createList(tagged_results)
     addConceptsToOntology(ontopath, concepts)
 
-def getDocumentsFromOntology(query_concepts):
-    path = "./persist/ontology/test.owl"
-    onto = get_ontology("file://" + path)
-    onto.load()
+def get_concepts(onto):
     with onto:
         sync_reasoner()
-    concepts = onto.search(is_a = onto.Concept)
+    return onto.search(is_a = onto.Concept)
+
+def getDocumentsFromOntology(concepts, ontopath):
+    log("Call to getDocumentsFromOntology()")
+    onto = get_ontology("file://" + ontopath)
+    onto.load()
+    ontoconcepts = get_concepts(onto)
     scores = []
-    for concept in concepts:
+    for concept in ontoconcepts:
         score = -1
-        for token in query_concepts:
+        for token in concepts:
+            print(concept.name, token)
             if score == -1:
                 score = editdistance.eval(concept.name, token)
             else:
-                score = min(score, editdistance.eval(concept.name, token))
+                score = min(score, editdistance.eval(concept.name,token))
         scores.append((score, concept))
-    lowest_scores = list(filter(lambda x: x[0] < 3, scores))
-    result = {"documents":[]}
+    lowest_scores = list(filter(lambda x: x[0] < 3,scores))
+    result = []
+    validConcepts = []
     for score in lowest_scores:
-        concept = score[1]
+        validConcepts.append(score[1])
+    #Expand concepts
+    for concept in validConcepts:
         documents = concept.conceptInDocument
         for document in documents:
-            result["documents"].append((document.name))
+            if document.name not in result:
+                result.append(document.name)
     return result
 
+def processQuery(query,ontopath):
+    cleaned = _cleanQuery(query)
+    concepts = _createSet(cleaned)
+    return getDocumentsFromOntology(concepts, ontopath)
+
 def getDocuments(query):
-    cleaned = _clean(query)
-    tagged_results = tagging_implementation.tag(cleaned)
-    query_concepts = _createSet(tagged_results)
-    return getDocumentsFromOntology(query_concepts)
+    #TODO get ontologies from bd
+    ontopath = "./persist/ontology/coruja_test.owl"
+    return processQuery(query, ontopath)
