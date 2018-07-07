@@ -256,8 +256,8 @@ def annotateDocumentsInPath(path, ontopath):
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][satellite[1]] = set(validNeighbor)
-    print(ontoDictFinal)
-    #processOntodict(ontoDictFinal, ontopath)
+    #print(ontoDictFinal)
+    processOntodict(ontoDictFinal, ontopath)
     return status
 
 def saveFileToBd(path):

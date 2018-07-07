@@ -23,13 +23,16 @@ def service(request_body):
     #TODO: Get activie ontologies from bd
     ontopath = config.OntologyDir + "coruja_test.owl"
     if (type == '0'):
+        error = ""
         filepath = body['source'][0]
         status = annotateDocumentsInPath(filepath,ontopath)
     if (type == '1'):
+        error = ""
         filepath = body['source'][0]
         status = annotateDocumentInPath(filepath, ontopath)
     if (type == '2'):
         #TODO: Get document path from BD using docid
+        error = ""
         docid = body['source'][0]
         status = 1
     dictionary = {'status': status, 'error': error, 'extra': extra}
