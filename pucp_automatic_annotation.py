@@ -91,33 +91,6 @@ def createBaseOntology(filename, filepath):
     onto.save(file=onto_file, format="rdfxml")
     return onto_file.name, filenameOwl, uri
 
-def createOntology(document, concepts):
-    onto = get_ontology(config.OntologyNamespace + "test_ontology.owl")
-    class Document(Thing):
-        namespace = onto
-
-    class Concept(Thing):
-        namespace = onto
-
-    class documentHasConcept(ObjectProperty):
-        namespace = onto
-        domain = [Document]
-        range = [Concept]
-
-    class conceptInDocument(ObjectProperty):
-        namespace = onto
-        domain = [Concept]
-        range = [Document]
-        inverse_property = documentHasConcept
-
-    documentTest = Document(document)
-    for concept in concepts:
-        ontoConcept = Concept(concept)
-        documentTest.documentHasConcept.append(ontoConcept)
-    onto_file = open("/var/www/pyapi/scripts/persist/ontology.owl", 'wb+')
-    onto.save(file=onto_file, format="rdfxml")
-
-
 def addConceptsToOntology(path, concepts):
     onto = get_ontology("file://" + path)
     onto.load()
@@ -215,7 +188,7 @@ def processOntodict(ontodict, ontopath):
             NewClass = types.new_class(ontoclass, (Concept,), kwds={})
             for elem in classelem:
                 NewClass(elem)
-                
+
     class documentHasConcept(ObjectProperty):
         namespace = onto
         domain = [Document]
@@ -335,3 +308,5 @@ def getDocuments(query):
     #TODO get ontologies from bd
     ontopath = "./persist/ontology/coruja_test.owl"
     return processQuery(query, ontopath)
+
+annotateDocumentsInPath("./persist/debug/test_docs/pc_test", "./persist/ontology/nuclear_option.owl")

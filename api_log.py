@@ -1,6 +1,6 @@
 import logging
-import config
+import os
 
 def log(message):
-    logging.basicConfig(filename=config.LogDir,level=logging.DEBUG)
+    logging.basicConfig(filename= os.path.join(os.path.dirname(__file__), 'persist/log'),level=logging.DEBUG)
     logging.info(message)
