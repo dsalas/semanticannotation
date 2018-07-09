@@ -3,3 +3,4 @@ scpDocs
 persist/log
 persist/ontology
 .idea
+.DS_Store

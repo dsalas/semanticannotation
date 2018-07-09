@@ -207,7 +207,7 @@ def processOntodict(ontodict, ontopath):
             currentDocument = Document(docid)
             currentConcept = Concept(conceptname)
             currentDocument.documentHasConcept.append(currentConcept)
-            currentConcept.conceptInDocument(currentDocument)
+            currentConcept.conceptInDocument.append(currentDocument)
 
     onto_file = open(ontopath, 'wb+')
     try:
@@ -273,8 +273,8 @@ def annotateDocumentInPath(path, ontopath):
     addConceptsToOntology(ontopath, concepts)
 
 def get_concepts(onto):
-    with onto:
-        sync_reasoner()
+    #with onto:
+    #    sync_reasoner()
     return onto.search(is_a = onto.Concept)
 
 def getDocumentsFromOntology(concepts, ontopath):
@@ -313,3 +313,8 @@ def getDocuments(query):
     #TODO get ontologies from bd
     ontopath = os.path.join(os.path.dirname(__file__), "persist/ontology/coruja_test.owl")
     return processQuery(query, ontopath)
+
+#TODO Delete debug
+#createBaseOntology("coruja_test","persist/ontology/")
+#annotateDocumentsInPath("persist/debug/test_docs/pc_test","persist/ontology/coruja_test.owl")
+#print(getDocuments("punto"))
