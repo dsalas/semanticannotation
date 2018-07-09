@@ -195,6 +195,11 @@ def processOntodict(ontodict, ontopath):
         domain = [Document]
         range = [Concept]
 
+    class conceptInDocument(ObjectProperty):
+        namespace = onto
+        domain = [Concept]
+        range = [Document]
+
     for concept in concepts:
         docid = concept[1]
         conceptname = concept[0]
@@ -202,6 +207,7 @@ def processOntodict(ontodict, ontopath):
             currentDocument = Document(docid)
             currentConcept = Concept(conceptname)
             currentDocument.documentHasConcept.append(currentConcept)
+            currentConcept.conceptInDocument(currentDocument)
 
     onto_file = open(ontopath, 'wb+')
     try:

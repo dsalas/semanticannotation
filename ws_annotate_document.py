@@ -21,7 +21,7 @@ def service(request_body):
     error = "Incorrect type."
     extra = "Current type: " + type
     #TODO: Get activie ontologies from bd
-    ontopath = config.OntologyDir + "coruja_test.owl"
+    ontopath = config.OntologyDir + "nuclear_option.owl"
     if (type == '0'):
         error = ""
         filepath = body['source'][0]
