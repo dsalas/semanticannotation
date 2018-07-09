@@ -273,8 +273,8 @@ def annotateDocumentInPath(path, ontopath):
     addConceptsToOntology(ontopath, concepts)
 
 def get_concepts(onto):
-    with onto:
-        sync_reasoner()
+    #with onto:
+    #    sync_reasoner()
     return onto.search(is_a = onto.Concept)
 
 def getDocumentsFromOntology(concepts, ontopath):
