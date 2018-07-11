@@ -317,4 +317,4 @@ def getDocuments(query):
 #TODO Delete debug
 #createBaseOntology("coruja_test","persist/ontology/")
 #annotateDocumentsInPath("persist/debug/test_docs/pc_test","persist/ontology/coruja_test.owl")
-#print(getDocuments("punto"))
+print(getDocuments("punto"))
