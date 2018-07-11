@@ -1,0 +1,5 @@
+[DEFAULT]
+RootDir = /var/www/pyapi/scripts/
+OntologyDir = persist/ontology/
+LogDir = persist/log/
+OntologyNamespace = http://test.org/

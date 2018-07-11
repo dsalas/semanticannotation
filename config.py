@@ -11,13 +11,13 @@ OntologyNamespace = config['DEFAULT']['OntologyNamespace']#"http://test.org/"
 LogDir = RootDir + config['DEFAULT']['LogDir']#persist/log/
 
 def editOntologyNamespace(namespace):
-    config.read('config.ini')
+    config.read(config_file)
     config.set('DEFAULT', 'OntologyNamespace', namespace)
-    with open('config.ini', 'w') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)
 
 def editOntologyRootDir(root):
-    config.read('config.ini')
+    config.read(config_file)
     config.set('DEFAULT', 'RootDir', root)
-    with open('config.ini', 'w') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)

@@ -1,8 +1,8 @@
 from cgi import urllib
 import json
 import sys
-import config
 sys.path.append('/var/www/pyapi/scripts')
+import config
 from pucp_automatic_annotation import addConceptsToOntology
 
 

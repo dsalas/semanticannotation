@@ -15,7 +15,7 @@ import math
 from api_log import log
 
 def _getText(filename):
-    text = textract.process(filename, method='pdfminer')
+    text = textract.process(filename)
     decoded = text.decode("utf-8")
     return decoded
 
@@ -25,6 +25,7 @@ def _clean(text):
     words = clean.split(" ")
     words = list(filter(lambda x: len(x) > 2, words))
     clean_words = []
+    nltk.data.path.append(os.path.join(os.path.dirname(__file__), 'nltk-data'))
     stopwords = set(nltk.corpus.stopwords.words('spanish'))
     for word in words:
         if word.isalpha():
@@ -39,6 +40,7 @@ def _cleanQuery(text):
     words = clean.split(" ")
     words = list(filter(lambda x: len(x) > 2, words))
     clean_words = []
+    nltk.data.path.append(os.path.join(os.path.dirname(__file__), 'nltk-data'))
     stopwords = set(nltk.corpus.stopwords.words('spanish'))
     for word in words:
         if word.isalpha():
@@ -311,7 +313,7 @@ def processQuery(query,ontopath):
 
 def getDocuments(query):
     #TODO get ontologies from bd
-    ontopath = os.path.join(os.path.dirname(__file__), "persist/ontology/coruja_test.owl")
+    ontopath = os.path.join(os.path.dirname(__file__), "persist/ontology/nuclear_option.owl")
     return processQuery(query, ontopath)
 
 #TODO Delete debug
