@@ -11,13 +11,14 @@ OntologyNamespace = config['coruja']['OntologyNamespace']#"http://test.org/"
 LogDir = RootDir + config['coruja']['LogDir']#persist/log/
 
 def editOntologyNamespace(namespace):
-    config.read('config.ini')
+    config.read(config_file)
     config.set('coruja', 'OntologyNamespace', namespace)
-    with open('config.ini', 'w') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)
 
 def editOntologyRootDir(root):
-    config.read('config.ini')
+    config.read(config_file)
     config.set('coruja', 'RootDir', root)
-    with open('config.ini', 'w') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)
+
