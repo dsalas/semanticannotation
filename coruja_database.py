@@ -1,10 +1,12 @@
 from configparser import ConfigParser
 import pymysql
 from pymysql import MySQLError
-
+import os
 import api_log
 
-def read_db_config(filename='config.ini', section='mysql'):
+def read_db_config():
+    filename = os.path.join(os.path.dirname(__file__), 'config.ini')
+    section = 'mysql'
     parser = ConfigParser()
     parser.read(filename)
     db = {}
