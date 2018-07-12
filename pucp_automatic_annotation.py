@@ -211,7 +211,7 @@ def processOntodict(ontodict, ontopath):
         conceptname = concept[0]
         with onto:
             currentDocument = Document(docid)
-            currentConcept = Concept(conceptname)
+            currentConcept = Concept(conceptname.lower())
             currentDocument.documentHasConcept.append(currentConcept)
             currentConcept.conceptInDocument.append(currentDocument)
 
@@ -392,7 +392,7 @@ def updateConcepts(docId,ontoId,concepts):
     document = result[0]
     document.documentHasConcept = []
     for concept in concepts:
-        ontoconcept = onto.Concept(concept)
+        ontoconcept = onto.Concept(concept.lower())
         ontoconcept.conceptInDocument.append(document)
     onto_file = open(ontopath, 'wb+')
     onto.save(file=onto_file, format="rdfxml")
@@ -400,11 +400,12 @@ def updateConcepts(docId,ontoId,concepts):
 
 #createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 #createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
+#createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 
-#ontoId = 7
-#import coruja_database
-#ontopath = coruja_database.getOntology(ontoId)
-#annotateDocumentsInPath("persist/debug/test_docs/pc_test", ontopath)
+ontoId = 9
+import coruja_database
+ontopath = coruja_database.getOntology(ontoId)
+annotateDocumentsInPath("persist/debug/test_docs/tree_test", ontopath)
 
 #print(getDocuments("punto"))
 
