@@ -8,7 +8,7 @@ sys.path.append('/var/www/pyapi/scripts')
 import config
 from pucp_automatic_annotation import annotateDocumentsInPath
 from pucp_automatic_annotation import annotateDocumentInPath
-
+import coruja_database
 # params:
 # type: 0 folder, 1 path, 2 database id
 # filepath 
@@ -17,11 +17,11 @@ from pucp_automatic_annotation import annotateDocumentInPath
 def service(request_body):
     body = urllib.parse.parse_qs(request_body)
     type = body['type'][0]
+    ontoId = body['ontoId'][0]
+    ontopath = coruja_database.getOntology(ontoId)
     status = 0	   
     error = "Incorrect type."
     extra = "Current type: " + type
-    #TODO: Get activie ontologies from bd
-    ontopath = config.OntologyDir + "nuclear_option.owl"
     if (type == '0'):
         error = ""
         filepath = body['source'][0]
