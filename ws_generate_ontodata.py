@@ -12,7 +12,7 @@ from pucp_automatic_annotation import annotateDocumentsInList
 
 def service(request_body):
     docList = request_body['source']
-    ontoId = request_body['ontoId']
+    ontoId = request_body['ontologyid']
     result = 1
     extra = ""
     error = ""
