@@ -340,6 +340,50 @@ def getConceptsFromOntology(documentId, ontoId):
     ontopath = coruja_database.getOntology(ontoId)
     return getConcepts(documentId, ontopath)
 
+def annotateDocumentsInList(docList, ontoId):
+    log("Call to annotateDocumentsInPath()")
+    import coruja_database
+    ontopath = coruja_database.getOntology(ontoId)
+    from nltk.tag import StanfordPOSTagger
+    import coruja_database
+    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/models')
+    lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
+    lemmaDict.columns = ["lemma", "token"]
+    maxWordDistance = 2
+    spanish_postagger = StanfordPOSTagger('spanish.tagger',os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
+    posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
+    status = {}
+    ontoDict = {}
+    for doc in docList:
+        filepath = doc['path']
+        docid = doc['id']
+        log("Procesing " + filepath)
+        processDocument(docid, filepath, ontoDict, maxWordDistance, posTagDescDf, spanish_postagger, lemmaDict)
+        status[filepath] = 1
+    allCount = len(ontoDict)
+    tenPCount = math.trunc(0.1 * allCount)
+    countList = []
+    ontoDictFinal = {"clases": {}, "concepts": set([])}
+    for key, element in ontoDict.items():
+        countList.append((element["count"], key))
+        ontoDictFinal["concepts"].add((key, element["docid"]))
+
+    mainConcepts = sorted(countList, reverse=True)[:tenPCount]
+
+    for mainConcept in mainConcepts:
+        validNeighbor = []
+        neighborCount = len(ontoDict[mainConcept[1]]["neighbors"])
+        neighborTenPCount = math.trunc(0.5 * neighborCount)
+        closeNeighbors = sorted(ontoDict[mainConcept[1]]["neighbors"])[:neighborTenPCount]
+        for neighbor in closeNeighbors:
+            if neighbor != mainConcept[1]:
+                if ontoDict[mainConcept[1]]["neighbors"][neighbor] > 1:
+                    validNeighbor.append(neighbor)
+        if len(validNeighbor) > 0:
+            ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
+    processOntodict(ontoDictFinal, ontopath)
+    return status
+
 #createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 #createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 
