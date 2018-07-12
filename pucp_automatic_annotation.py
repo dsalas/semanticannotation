@@ -132,7 +132,6 @@ def addDocumentConceptsToOntology(docid, path, concepts):
 def annotateDocumentInPath(docid, filepath, ontopath):
     log("Call to annotateDocumentInPath()")
     from nltk.tag import StanfordPOSTagger
-    import coruja_database
     os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__),'scpDocs/stanford-postagger-full-2017-06-09/models')
     lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__), 'lemmatization-es.pkl'))
     lemmaDict.columns = ["lemma", "token"]
@@ -383,6 +382,21 @@ def annotateDocumentsInList(docList, ontoId):
             ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
     processOntodict(ontoDictFinal, ontopath)
     return status
+
+def updateConcepts(docId,ontoId,concepts):
+    import coruja_database
+    ontopath = coruja_database.getOntology(ontoId)
+    onto = get_ontology("file://" + ontopath)
+    onto.load()
+    result = onto.search(iri=onto.base_iri + docId)
+    document = result[0]
+    document.documentHasConcept = []
+    for concept in concepts:
+        ontoconcept = onto.Concept(concept)
+        ontoconcept.conceptInDocument.append(document)
+    onto_file = open(ontopath, 'wb+')
+    onto.save(file=onto_file, format="rdfxml")
+    return 1
 
 #createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 #createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
