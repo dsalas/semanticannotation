@@ -14,7 +14,7 @@ import coruja_database
 #
 
 def service(request_body):
-    filename = body['filename']
+    filename = request_body['filename']
     filepath = config.OntologyDir
     status = 1
     result,filename,uri = createBaseOntology(filename,filepath)

@@ -21,6 +21,7 @@ def read_db_config():
 def connect():
     config = read_db_config()
     db = pymysql.connect(config["host"],config["user"],config["password"],config["database"])
+    #db = pymysql.connect(host="127.0.0.1",user="root",db="semanticweb",password="jedda.mysql",charset='utf8mb4')
     return db
 
 def getVersion():

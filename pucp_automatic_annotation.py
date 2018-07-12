@@ -343,11 +343,11 @@ def getConceptsFromOntology(documentId, ontoId):
 #createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 #createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 
-ontoId = 7
-import coruja_database
-ontopath = coruja_database.getOntology(ontoId)
+#ontoId = 7
+#import coruja_database
+#ontopath = coruja_database.getOntology(ontoId)
 #annotateDocumentsInPath("persist/debug/test_docs/pc_test", ontopath)
 
 #print(getDocuments("punto"))
 
-print(getConceptsFromOntology(8,7))
+#print(getConceptsFromOntology(8,7))
