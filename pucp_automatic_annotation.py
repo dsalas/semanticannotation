@@ -62,9 +62,8 @@ def _createSet(clean):
         concepts.add(element)
     return concepts
 
-
-
 def createBaseOntology(filename, filepath):
+    import coruja_database
     onto = get_ontology(config.OntologyNamespace + filename + ".owl")
     class Document(Thing):
         namespace = onto
@@ -91,6 +90,7 @@ def createBaseOntology(filename, filepath):
     uri = config.OntologyNamespace
     onto_file = open(filepath + filenameOwl, 'wb+')
     onto.save(file=onto_file, format="rdfxml")
+    coruja_database.insertOntology(uri, filenameOwl, filepath)
     return onto_file.name, filenameOwl, uri
 
 def addConceptsToOntology(path, concepts):
@@ -129,14 +129,19 @@ def addDocumentConceptsToOntology(docid, path, concepts):
     except:
         return False
 
-def annotateDocumentInPath(path, ontopath):
-    text = _getText(path)
-    cleaned = _clean(text)
-    tagged_results = tagging_implementation.tag(cleaned)
-    concepts = _createList(tagged_results)
-    docid = saveFileToBd(path)
-    status = addDocumentConceptsToOntology(docid, ontopath, concepts)
-    return status
+def annotateDocumentInPath(docid, filepath, ontopath):
+    log("Call to annotateDocumentInPath()")
+    from nltk.tag import StanfordPOSTagger
+    import coruja_database
+    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__),'scpDocs/stanford-postagger-full-2017-06-09/models')
+    lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__), 'lemmatization-es.pkl'))
+    lemmaDict.columns = ["lemma", "token"]
+    maxWordDistance = 2
+    spanish_postagger = StanfordPOSTagger('spanish.tagger', os.path.join(os.path.dirname(__file__),'scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
+    posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
+    ontoDict = {}
+    processDocument(docid, filepath, ontoDict, maxWordDistance, posTagDescDf, spanish_postagger, lemmaDict)
+    return 1
 
 def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_postagger, lemmaDict):
     text = _getText(filepath)
@@ -223,6 +228,7 @@ def processOntodict(ontodict, ontopath):
 def annotateDocumentsInPath(path, ontopath):
     log("Call to annotateDocumentsInPath()")
     from nltk.tag import StanfordPOSTagger
+    import coruja_database
     os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/models')
     lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
     lemmaDict.columns = ["lemma", "token"]
@@ -236,7 +242,7 @@ def annotateDocumentsInPath(path, ontopath):
     for file in files:
         filepath = path + "/" + file
         log("Procesing " + filepath)
-        docid = round(time.time())
+        docid = coruja_database.insertDocument(path + "/",file)
         processDocument(docid, filepath, ontoDict, maxWordDistance, posTagDescDf, spanish_postagger, lemmaDict)
         status[filepath] = 1
     allCount = len(ontoDict)
@@ -247,19 +253,19 @@ def annotateDocumentsInPath(path, ontopath):
         countList.append((element["count"], key))
         ontoDictFinal["concepts"].add((key, element["docid"]))
 
-    satellites = sorted(countList, reverse=True)[:tenPCount]
+    mainConcepts = sorted(countList, reverse=True)[:tenPCount]
 
-    for satellite in satellites:
+    for mainConcept in mainConcepts:
         validNeighbor = []
-        neighborCount = len(ontoDict[satellite[1]]["neighbors"])
+        neighborCount = len(ontoDict[mainConcept[1]]["neighbors"])
         neighborTenPCount = math.trunc(0.5 * neighborCount)
-        closeNeighbors = sorted(ontoDict[satellite[1]]["neighbors"])[:neighborTenPCount]
+        closeNeighbors = sorted(ontoDict[mainConcept[1]]["neighbors"])[:neighborTenPCount]
         for neighbor in closeNeighbors:
-            if neighbor != satellite[1]:
-                if ontoDict[satellite[1]]["neighbors"][neighbor] > 1:
+            if neighbor != mainConcept[1]:
+                if ontoDict[mainConcept[1]]["neighbors"][neighbor] > 1:
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
-            ontoDictFinal["clases"][satellite[1]] = set(validNeighbor)
+            ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
     processOntodict(ontoDictFinal, ontopath)
     return status
 
@@ -279,8 +285,8 @@ def get_concepts(onto):
     #    sync_reasoner()
     return onto.search(is_a = onto.Concept)
 
-def getDocumentsFromOntology(concepts, ontopath):
-    log("Call to getDocumentsFromOntology()")
+def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
+    log("Call to getDocumentsFromOntology(): " + ontopath)
     onto = get_ontology("file://" + ontopath)
     onto.load()
     ontoconcepts = get_concepts(onto)
@@ -294,7 +300,6 @@ def getDocumentsFromOntology(concepts, ontopath):
                 score = min(score, editdistance.eval(concept.name,token))
         scores.append((score, concept))
     lowest_scores = list(filter(lambda x: x[0] < 3,scores))
-    result = []
     validConcepts = []
     for score in lowest_scores:
         validConcepts.append(score[1])
@@ -302,16 +307,47 @@ def getDocumentsFromOntology(concepts, ontopath):
     for concept in validConcepts:
         documents = concept.conceptInDocument
         for document in documents:
-            if document.name not in result:
-                result.append(document.name)
-    return result
+            if document.name not in resultDocuments:
+                resultDocuments.append(document.name)
 
-def processQuery(query,ontopath):
+def processQuery(query,ontoPaths):
     cleaned = _cleanQuery(query)
     concepts = _createSet(cleaned)
-    return getDocumentsFromOntology(concepts, ontopath)
+    documents = []
+    for ontopath in ontoPaths:
+        getDocumentsFromOntology(concepts, ontopath, documents)
+    return documents
 
 def getDocuments(query):
-    #TODO get ontologies from bd
-    ontopath = os.path.join(os.path.dirname(__file__), "persist/ontology/nuclear_option.owl")
-    return processQuery(query, ontopath)
+    import coruja_database
+    ontoPaths = coruja_database.getActiveOntologies()
+    return processQuery(query, ontoPaths)
+
+
+def getConcepts(documentId, ontopath):
+    onto = get_ontology("file://" + ontopath)
+    onto.load()
+    document = onto.search(iri =onto.base_iri+str(documentId))[0]
+    concepts = document.documentHasConcept
+    result = []
+    for concept in concepts:
+        result.append(concept.name)
+    return result
+
+
+def getConceptsFromOntology(documentId, ontoId):
+    import coruja_database
+    ontopath = coruja_database.getOntology(ontoId)
+    return getConcepts(documentId, ontopath)
+
+#createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
+#createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
+
+ontoId = 7
+import coruja_database
+ontopath = coruja_database.getOntology(ontoId)
+#annotateDocumentsInPath("persist/debug/test_docs/pc_test", ontopath)
+
+#print(getDocuments("punto"))
+
+print(getConceptsFromOntology(8,7))

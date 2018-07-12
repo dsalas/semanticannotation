@@ -1,5 +1,7 @@
 from configparser import ConfigParser
 import pymysql
+from pymysql import MySQLError
+
 import api_log
 
 def read_db_config(filename='config.ini', section='mysql'):
@@ -49,28 +51,48 @@ def insertDocument(uri, name):
        Bo_DocProcesado, Tx_DocNombreArchivo) \
        VALUES ('%s', '%d', '%s')" % \
           (uri, 1, name)
+    id = ""
     try:
         cursor.execute(sql)
+        id = cursor.lastrowid
         db.commit()
     except:
         db.rollback()
     db.close()
+    return id
 
 def getActiveOntologies():
     db = connect()
     cursor = db.cursor()
     ontofiles = []
     try:
-        cursor.execute("SELECT * FROM ontologia WHERE Bo_OntHab = 1")
+        cursor.execute("SELECT * FROM `ontologia` WHERE Bo_OntHab = 1")
         results = cursor.fetchall()
         for row in results:
             file = row[2]
             path = row[3]
             ontofile = path+file
-            ontofiles.add(ontofile)
+            ontofiles.append(ontofile)
             # Now print fetched result
             api_log.log("Active ontology: " + ontofile)
-    except:
+    except MySQLError as e:
         api_log.log("Error: unable to fetch data")
     db.close()
     return ontofiles
+
+def getOntology(ontoId):
+    db = connect()
+    cursor = db.cursor()
+    ontofile = ""
+    try:
+        sql = "SELECT * FROM `ontologia` WHERE id_ontologia = %s"
+        cursor.execute(sql,(ontoId,))
+        result = cursor.fetchone()
+        file = result[2]
+        path = result[3]
+        ontofile = path + file
+        api_log.log("Got ontology: " + ontofile)
+    except MySQLError as e:
+        api_log.log("Error: unable to fetch data")
+    db.close()
+    return ontofile
