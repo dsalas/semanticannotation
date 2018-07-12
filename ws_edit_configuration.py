@@ -12,9 +12,8 @@ from pucp_automatic_annotation import addConceptsToOntology
 #
 
 def service(request_body):
-    body = urllib.parse.parse_qs(request_body)
-    namespace = body['namespace'][0]
-    root = body['root'][0]
+    namespace = request_body['namespace']
+    root = request_body['root']
     status = 1
     extra = ""
     error = ""

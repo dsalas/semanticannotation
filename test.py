@@ -7,6 +7,6 @@ import sys
 sys.path.append('/var/www/pyapi/scripts')
 
 def service(request_body):
-    dictionary = parse_qs(request_body)
-    dictionary["extra"] = sys.version
-    return json.dumps(dictionary)
+    # dictionary = parse_qs(request_body)
+    # dictionary["extra"] = sys.version
+    return json.dumps(request_body)

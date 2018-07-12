@@ -14,8 +14,7 @@ from pucp_automatic_annotation import createBaseOntology
 #
 
 def service(request_body):
-    body = urllib.parse.parse_qs(request_body)
-    filename = body['filename'][0]
+    filename = body['filename']
     filepath = config.OntologyDir
     status = 1
     result,filename,url = createBaseOntology(filename,filepath)
