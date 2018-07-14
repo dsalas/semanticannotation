@@ -4,10 +4,9 @@ import os
 import io
 import sys
 
-sys.path.append('/var/www/pyapi/scripts')
+sys.path.append(os.path.dirname(__file__))
 import config
 from pucp_automatic_annotation import annotateDocumentsInPath
-from pucp_automatic_annotation import annotateDocumentInPath
 import coruja_database
 # params:
 # type: 0 folder, 1 path, 2 database id

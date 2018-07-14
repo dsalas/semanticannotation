@@ -1,19 +1,16 @@
-from cgi import urllib, escape
+#Author Diego Salas
+#Date 11/12/2017
 import json
 import os
-import io
 import sys
-
-sys.path.append('/var/www/pyapi/scripts')
-import config
+sys.path.append(os.path.dirname(__file__))
 from pucp_automatic_annotation import getDocuments
 
 # params:
 # query
 
 def service(request_body):
-    body = urllib.parse.parse_qs(request_body)
-    query = body['query'][0]
+    query = request_body['query']
     status = 1
     results = getDocuments(query)
     error = ""

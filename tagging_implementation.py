@@ -1,3 +1,5 @@
+#Author Diego Salas
+#Date 11/12/2017
 # -*- coding: utf-8 -*-
 from nltk.tag import StanfordPOSTagger
 import os

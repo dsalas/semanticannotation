@@ -1,17 +1,14 @@
-from cgi import urllib, escape
+#Author Diego Salas
+#Date 11/12/2017
 import json
 import os
-import io
 import sys
-
-sys.path.append('/var/www/pyapi/scripts')
+sys.path.append(os.path.dirname(__file__))
 import config
 from pucp_automatic_annotation import createBaseOntology
-import coruja_database
 
 # params:
-# data list
-#
+# filename: ontology name
 
 def service(request_body):
     filename = request_body['filename']

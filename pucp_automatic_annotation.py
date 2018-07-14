@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+#Author Diego Salas
+#Date 11/12/2017
 import textract
 import nltk
 import tagging_implementation
@@ -6,7 +8,7 @@ from owlready2 import *
 import json
 import time
 import os
-sys.path.append('/var/www/pyapi/scripts')
+sys.path.append(os.path.dirname(__file__))
 import config
 import editdistance
 import pandas as pd

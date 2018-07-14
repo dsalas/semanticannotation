@@ -1,3 +1,5 @@
+#Author Diego Salas
+#Date 11/12/2017
 from configparser import ConfigParser
 import pymysql
 from pymysql import MySQLError

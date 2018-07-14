@@ -1,15 +1,12 @@
-from cgi import urllib
 import json
 import sys
-sys.path.append('/var/www/pyapi/scripts')
+import os
+sys.path.append(os.path.dirname(__file__))
 import config
-from pucp_automatic_annotation import addConceptsToOntology
-
 
 # params:
-# filepath
-# concept list
-#
+# namespace: namespace for ontologies
+# root: api rootdir
 
 def service(request_body):
     namespace = request_body['namespace']

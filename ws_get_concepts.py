@@ -1,8 +1,8 @@
 import json
 import sys
+import os
 
-sys.path.append('/var/www/pyapi/scripts')
-import config
+sys.path.append(os.path.dirname(__file__))
 from pucp_automatic_annotation import getConcepts
 
 # params:

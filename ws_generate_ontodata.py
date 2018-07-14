@@ -1,14 +1,12 @@
 import json
 import sys
-sys.path.append('/var/www/pyapi/scripts')
-import config
+import os
+sys.path.append(os.path.dirname(__file__))
 from pucp_automatic_annotation import annotateDocumentsInList
-
 
 # params:
 # filepath
 # concept list
-#
 
 def service(request_body):
     docList = request_body['source']

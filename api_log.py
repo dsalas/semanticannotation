@@ -1,3 +1,5 @@
+#Author Diego Salas
+#Date 11/12/2017
 import logging
 import os
 
