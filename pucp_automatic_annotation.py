@@ -151,7 +151,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
         ontoDict[concept]["docid"] = docid
         i=i+1
 
-def processOntodict(ontodict, ontopath):
+def processOntodict(ontodict, ontopath, type):
     log("Call to processOntodict()")
     onto = get_ontology("file://" + ontopath)
     onto.load()
@@ -164,12 +164,13 @@ def processOntodict(ontodict, ontopath):
 
     clases = ontodict['clases']
     concepts = ontodict['concepts']
-    for classkey, classelem in clases.items():
-        ontoclass = classkey.title()
-        with onto:
-            NewClass = types.new_class(ontoclass, (Concept,), kwds={})
-            for elem in classelem:
-                NewClass(elem.lower())
+    if type == 1:
+        for classkey, classelem in clases.items():
+            ontoclass = classkey.title()
+            with onto:
+                NewClass = types.new_class(ontoclass, (Concept,), kwds={})
+                for elem in classelem:
+                    NewClass(elem.lower())
 
     class documentHasConcept(ObjectProperty):
         namespace = onto
@@ -240,7 +241,7 @@ def annotateDocumentsInPath(path, ontopath):
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
-    processOntodict(ontoDictFinal, ontopath)
+    processOntodict(ontoDictFinal, ontopath, 1)
     return status
 
 def saveFileToBd(path):
@@ -313,12 +314,22 @@ def getConcepts(documentId, ontopath):
 def getConceptsFromOntology(documentId, ontoId):
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
+    if (ontopath == ""):
+        return []
     return getConcepts(documentId, ontopath)
 
-def annotateDocumentsInList(docList, ontoId):
+def annotateDocumentsInList(docList, ontoId, type):
     log("Call to annotateDocumentsInPath()")
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
+    status = []
+    if ontopath == "":
+        for doc in docList:
+            curr_status = {}
+            curr_status["id"] = doc['id']
+            curr_status["status"] = 0;
+            status.append(curr_status)
+        return status
     from nltk.tag import StanfordPOSTagger
     os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/models')
     lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
@@ -326,14 +337,16 @@ def annotateDocumentsInList(docList, ontoId):
     maxWordDistance = 2
     spanish_postagger = StanfordPOSTagger('spanish.tagger',os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
     posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
-    status = {}
     ontoDict = {}
     for doc in docList:
         filepath = doc['path']
         docid = doc['id']
         log("Procesing " + filepath)
         processDocument(docid, filepath, ontoDict, maxWordDistance, posTagDescDf, spanish_postagger, lemmaDict)
-        status[filepath] = 1
+        curr_status = {}
+        curr_status["id"] = doc['id']
+        curr_status["status"] = 1;
+        status.append(curr_status)
     allCount = len(ontoDict)
     tenPCount = math.trunc(0.1 * allCount)
     countList = []
@@ -355,7 +368,7 @@ def annotateDocumentsInList(docList, ontoId):
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
-    processOntodict(ontoDictFinal, ontopath)
+    processOntodict(ontoDictFinal, ontopath, type)
     return status
 
 def updateConcepts(docId,ontoId,concepts):
@@ -386,7 +399,7 @@ def updateConcepts(docId,ontoId,concepts):
 #createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 8
 #createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 9
 #createBaseOntology("documents_full", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 10
-
+#createBaseOntology("coruja_new", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
 #ontoId = 10
 #import coruja_database
 #ontopath = coruja_database.getOntology(ontoId)

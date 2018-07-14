@@ -93,10 +93,14 @@ def getOntology(ontoId):
         sql = "SELECT * FROM `ontologia` WHERE id_ontologia = %s"
         cursor.execute(sql,(ontoId,))
         result = cursor.fetchone()
-        file = result[2]
-        path = result[3]
-        ontofile = path + file
-        api_log.log("Got ontology: " + ontofile)
+        if result != None:
+            file = result[2]
+            path = result[3]
+            ontofile = path + file
+            api_log.log("Got ontology: " + ontofile)
+        else:
+            api_log.log("Wrong ontology id: " + ontoId)
+            return ""
     except MySQLError as e:
         api_log.log("Error: unable to fetch data")
     db.close()

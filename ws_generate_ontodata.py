@@ -11,9 +11,9 @@ from pucp_automatic_annotation import annotateDocumentsInList
 def service(request_body):
     docList = request_body['source']
     ontoId = request_body['ontologyid']
-    result = 1
+    type = request_body["generateKnowledge"]
     extra = ""
     error = ""
-    annotateDocumentsInList(docList,ontoId)
+    result = annotateDocumentsInList(docList,ontoId, type)
     dictionary = {'result': result, 'error': error, 'extra': extra}
     return json.dumps(dictionary)
