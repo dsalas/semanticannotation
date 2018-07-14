@@ -2,6 +2,7 @@ __pycache__/
 scpDocs
 persist/log
 persist/ontology
+persist/debug/*
 .idea
 .DS_Store
 config.ini

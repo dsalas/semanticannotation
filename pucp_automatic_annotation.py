@@ -93,20 +93,6 @@ def createBaseOntology(filename, filepath):
     coruja_database.insertOntology(uri, filenameOwl, filepath)
     return onto_file.name, filenameOwl, uri
 
-def addConceptsToOntology(path, concepts):
-    onto = get_ontology("file://" + path)
-    onto.load()
-    class Concept(Thing):
-        namespace = onto
-    for concept in concepts:
-        Concept(concept)
-    onto_file = open(path, 'wb+')
-    try:
-        onto.save(file=onto_file, format="rdfxml")
-        return True
-    except:
-        return False
-
 def addDocumentConceptsToOntology(docid, path, concepts):
     onto = get_ontology("file://" + path)
     onto.load()
@@ -128,19 +114,6 @@ def addDocumentConceptsToOntology(docid, path, concepts):
         return True
     except:
         return False
-
-def annotateDocumentInPath(docid, filepath, ontopath):
-    log("Call to annotateDocumentInPath()")
-    from nltk.tag import StanfordPOSTagger
-    os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__),'scpDocs/stanford-postagger-full-2017-06-09/models')
-    lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__), 'lemmatization-es.pkl'))
-    lemmaDict.columns = ["lemma", "token"]
-    maxWordDistance = 2
-    spanish_postagger = StanfordPOSTagger('spanish.tagger', os.path.join(os.path.dirname(__file__),'scpDocs/stanford-postagger-full-2017-06-09/stanford-postagger.jar'))
-    posTagDescDf = pd.read_csv(os.path.join(os.path.dirname(__file__), "Stanford_POS_Tags.csv"))
-    ontoDict = {}
-    processDocument(docid, filepath, ontoDict, maxWordDistance, posTagDescDf, spanish_postagger, lemmaDict)
-    return 1
 
 def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_postagger, lemmaDict):
     text = _getText(filepath)
@@ -272,13 +245,6 @@ def saveFileToBd(path):
     ts = round(time.time())
     return ts
 
-def annotateDocumentInPath(path, ontopath):
-    text = _getText(path)
-    cleaned = _clean(text)
-    tagged_results = tagging_implementation.tag(cleaned)
-    concepts = _createList(tagged_results)
-    addConceptsToOntology(ontopath, concepts)
-
 def get_concepts(onto):
     #with onto:
     #    sync_reasoner()
@@ -287,7 +253,11 @@ def get_concepts(onto):
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     log("Call to getDocumentsFromOntology(): " + ontopath)
     onto = get_ontology("file://" + ontopath)
-    onto.load()
+    try:
+        onto.load()
+    except:
+        log("Error loading ontology " + ontopath)
+        return
     ontoconcepts = get_concepts(onto)
     scores = []
     for concept in ontoconcepts:
@@ -322,17 +292,21 @@ def getDocuments(query):
     ontoPaths = coruja_database.getActiveOntologies()
     return processQuery(query, ontoPaths)
 
-
 def getConcepts(documentId, ontopath):
-    onto = get_ontology("file://" + ontopath)
-    onto.load()
-    document = onto.search(iri =onto.base_iri+str(documentId))[0]
-    concepts = document.documentHasConcept
     result = []
-    for concept in concepts:
-        result.append(concept.name)
+    onto = get_ontology("file://" + ontopath)
+    try:
+        onto.load()
+    except:
+        log("Error loading ontology " + ontopath)
+        return result
+    documents = onto.search(iri =onto.base_iri+str(documentId))
+    if len(documents) > 0:
+        document = documents[0]
+        concepts = document.documentHasConcept
+        for concept in concepts:
+            result.append(concept.name)
     return result
-
 
 def getConceptsFromOntology(documentId, ontoId):
     import coruja_database
@@ -344,7 +318,6 @@ def annotateDocumentsInList(docList, ontoId):
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
     from nltk.tag import StanfordPOSTagger
-    import coruja_database
     os.environ["STANFORD_MODELS"] = os.path.join(os.path.dirname(__file__), 'scpDocs/stanford-postagger-full-2017-06-09/models')
     lemmaDict = pd.read_pickle(os.path.join(os.path.dirname(__file__),'lemmatization-es.pkl'))
     lemmaDict.columns = ["lemma", "token"]
@@ -387,26 +360,36 @@ def updateConcepts(docId,ontoId,concepts):
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
     onto = get_ontology("file://" + ontopath)
-    onto.load()
+    try:
+        onto.load()
+    except:
+        log("Error loading ontology " + ontopath)
+        return 0
     result = onto.search(iri=onto.base_iri + docId)
-    document = result[0]
-    document.documentHasConcept = []
-    for concept in concepts:
-        ontoconcept = onto.Concept(concept.lower())
-        ontoconcept.conceptInDocument.append(document)
-    onto_file = open(ontopath, 'wb+')
-    onto.save(file=onto_file, format="rdfxml")
+    if (len(result)>0):
+        document = result[0]
+        document.documentHasConcept = []
+        for concept in concepts:
+            ontoconcept = onto.Concept(concept.lower())
+            ontoconcept.conceptInDocument.append(document)
+    try:
+        onto_file = open(ontopath, 'wb+')
+        onto.save(file=onto_file, format="rdfxml")
+    except:
+        log("Error saving ontology " + ontopath)
+        return 0
     return 1
 
 #createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
-#createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
-#createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
+#createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 8
+#createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 9
+#createBaseOntology("documents_full", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 10
 
-ontoId = 9
+ontoId = 10
 import coruja_database
 ontopath = coruja_database.getOntology(ontoId)
-annotateDocumentsInPath("persist/debug/test_docs/tree_test", ontopath)
+annotateDocumentsInPath("persist/debug/test_docs/pc_full", ontopath)
 
-#print(getDocuments("punto"))
+#print(getDocuments("puntero"))
 
-#print(getConceptsFromOntology(8,7))
+#print(getConceptsFromOntology(8,10))
