@@ -387,10 +387,10 @@ def updateConcepts(docId,ontoId,concepts):
 #createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 9
 #createBaseOntology("documents_full", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 10
 
-ontoId = 10
-import coruja_database
-ontopath = coruja_database.getOntology(ontoId)
-annotateDocumentsInPath("persist/debug/test_docs/pc_full", ontopath)
+#ontoId = 10
+#import coruja_database
+#ontopath = coruja_database.getOntology(ontoId)
+#annotateDocumentsInPath("persist/debug/test_docs/pc_full", ontopath)
 
 #print(getDocuments("puntero"))
 
