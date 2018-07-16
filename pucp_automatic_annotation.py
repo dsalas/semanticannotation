@@ -295,8 +295,10 @@ def getDocuments(query):
     ontoPaths = coruja_database.getActiveOntologies()
     return processQuery(query, ontoPaths)
 
-def getConcepts(documentId, ontopath):
+def getConcepts(documentId, ontoId):
     result = []
+    import coruja_database
+    ontopath = coruja_database.getOntology(ontoId)
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
