@@ -9,8 +9,8 @@ import config
 # root: api rootdir
 
 def service(request_body):
-    namespace = request_body['namespace']
-    root = request_body['root']
+    namespace = request_body.get('namespace',"")
+    root = request_body.get('root',"")
     status = 1
     extra = ""
     error = ""
