@@ -151,7 +151,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
         ontoDict[concept]["docid"] = docid
         i=i+1
 
-def processOntodict(ontodict, ontopath, type):
+def processOntodict(ontodict, ontopath, mtype):
     log("Call to processOntodict()")
     onto = get_ontology("file://" + ontopath)
     onto.load()
@@ -164,7 +164,7 @@ def processOntodict(ontodict, ontopath, type):
 
     clases = ontodict['clases']
     concepts = ontodict['concepts']
-    if type == 1:
+    if mtype == 1:
         for classkey, classelem in clases.items():
             ontoclass = classkey.title()
             with onto:
@@ -318,7 +318,7 @@ def getConceptsFromOntology(documentId, ontoId):
         return []
     return getConcepts(documentId, ontopath)
 
-def annotateDocumentsInList(docList, ontoId, type):
+def annotateDocumentsInList(docList, ontoId,mtype):
     log("Call to annotateDocumentsInPath()")
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
@@ -368,7 +368,7 @@ def annotateDocumentsInList(docList, ontoId, type):
                     validNeighbor.append(neighbor)
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
-    processOntodict(ontoDictFinal, ontopath, type)
+    processOntodict(ontoDictFinal, ontopath,mtype)
     return status
 
 def updateConcepts(docId,ontoId,concepts):
