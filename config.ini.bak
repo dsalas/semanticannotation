@@ -1,5 +1,11 @@
-[DEFAULT]
-RootDir = /var/www/pyapi/scripts/
+[mysql]
+host = 127.0.0.1
+database = semanticweb
+user = root
+password = jedda.mysql
+[coruja]
+RootDir = /var/www/corujaAPI/scripts/
 OntologyDir = persist/ontology/
 LogDir = persist/log/
 OntologyNamespace = http://test.org/
+

@@ -296,6 +296,7 @@ def getDocuments(query):
     return processQuery(query, ontoPaths)
 
 def getConcepts(documentId, ontoId):
+    log("Call to getConcepts(): docid = " + documentId + " - ontid = " + ontoId)  
     result = []
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
@@ -308,9 +309,16 @@ def getConcepts(documentId, ontoId):
     documents = onto.search(iri =onto.base_iri+str(documentId))
     if len(documents) > 0:
         document = documents[0]
+        log("Document found " + document.iri)
         concepts = document.documentHasConcept
+        if len(concepts) > 0:
+            log("Concepts found.")
+        else: 
+            log("No concepts found.")
         for concept in concepts:
             result.append(concept.name)
+    else:
+        log("No document found. docid = " + documentId)
     return result
 
 def getConceptsFromOntology(documentId, ontoId):

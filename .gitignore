@@ -5,4 +5,5 @@ persist/ontology
 persist/debug/*
 .idea
 .DS_Store
+config.ini.bak
 config.ini
