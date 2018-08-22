@@ -103,6 +103,7 @@ def addDocumentConceptsToOntology(docid, path, concepts):
         namespace = onto
     class Document(Thing):
         namespace = onto
+
     currentDocument = Document(docid)
     class documentHasConcept(ObjectProperty):
         namespace = onto
@@ -187,7 +188,11 @@ def processOntodict(ontodict, ontopath, mtype):
         docid = concept[1]
         conceptname = concept[0]
         with onto:
-            currentDocument = Document(docid)
+            currentDocumentSearch = onto.search(iri =onto.base_iri+str(docid))
+            if len(currentDocumentSearch) > 0:
+                currentDocument =  currentDocumentSearch[0]
+            else:
+                currentDocument = Document(docid)
             currentConcept = Concept(conceptname.lower())
             currentDocument.documentHasConcept.append(currentConcept)
             currentConcept.conceptInDocument.append(currentDocument)
