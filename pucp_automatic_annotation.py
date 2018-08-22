@@ -37,6 +37,7 @@ def _clean(text):
     return result
 
 def _cleanQuery(text):
+    text = text.replace('\n', '')
     table = str.maketrans("","",string.punctuation)
     clean = text.translate(table)
     words = clean.split(" ")

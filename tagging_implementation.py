@@ -5,8 +5,7 @@ from nltk.tag import StanfordPOSTagger
 import os
 import pandas as pd
 
-def _describe_stanford_pos_tag(tagged,df):
-    result = []
+def _describe_stanford_pos_tag(tagged,df, result):
     for tag in tagged:
         described = df.loc[df['code'] == tag[1]]
         if not described.empty:
@@ -28,5 +27,11 @@ def tag(data):
     return result
 
 def tag(data, df,spanish_postagger):
-    tagged = spanish_postagger.tag(data.split())
-    return _describe_stanford_pos_tag(tagged,df)
+    words = data.split()
+    result = []
+    f = lambda A, n=100: [A[i:i + n] for i in range(0, len(A), n)]
+    tagmeList = f(words)
+    for tagme in tagmeList:
+        tagged = spanish_postagger.tag(tagme)
+        _describe_stanford_pos_tag(tagged, df, result)
+    return result
