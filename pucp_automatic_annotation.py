@@ -17,8 +17,12 @@ import math
 from api_log import log
 
 def _getText(filename):
-    text = textract.process(filename)
-    decoded = text.decode("utf-8")
+    decoded = ""
+    try:
+        text = textract.process(filename)
+        decoded = text.decode("utf-8")
+    except:
+        log("Could not read document content: " + filename)
     return decoded
 
 def _clean(text):

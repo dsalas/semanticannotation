@@ -29,7 +29,7 @@ def tag(data):
 def tag(data, df,spanish_postagger):
     words = data.split()
     result = []
-    f = lambda A, n=100: [A[i:i + n] for i in range(0, len(A), n)]
+    f = lambda A, n=60: [A[i:i + n] for i in range(0, len(A), n)]
     tagmeList = f(words)
     for tagme in tagmeList:
         tagged = spanish_postagger.tag(tagme)
