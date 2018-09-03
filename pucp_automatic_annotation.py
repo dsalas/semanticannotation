@@ -197,7 +197,11 @@ def processOntodict(ontodict, ontopath, mtype):
                 currentDocument =  currentDocumentSearch[0]
             else:
                 currentDocument = Document(docid)
-            currentConcept = Concept(conceptname.lower())
+            currentConceptSearch = onto.search(iri = onto.base_iri + conceptname.lower())
+            if len(currentConceptSearch):
+                currentConcept = currentConceptSearch[0]
+            else:
+                currentConcept = Concept(conceptname.lower())
             currentDocument.documentHasConcept.append(currentConcept)
             currentConcept.conceptInDocument.append(currentDocument)
 
@@ -415,16 +419,4 @@ def updateConcepts(docId,ontoId,concepts):
         return 0
     return 1
 
-#createBaseOntology("coruja_edpm", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
-#createBaseOntology("coruja_tree", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 8
-#createBaseOntology("coruja_tree_real", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 9
-#createBaseOntology("documents_full", os.path.join(os.path.dirname(__file__),"persist/ontology/")) id = 10
-#createBaseOntology("coruja_new", os.path.join(os.path.dirname(__file__),"persist/ontology/"))
-#ontoId = 10
-#import coruja_database
-#ontopath = coruja_database.getOntology(ontoId)
-#annotateDocumentsInPath("persist/debug/test_docs/pc_full", ontopath)
 
-#print(getDocuments("puntero"))
-
-#print(getConceptsFromOntology(8,10))
