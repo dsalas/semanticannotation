@@ -394,11 +394,12 @@ def annotateDocumentsInList(docList, ontoId,mtype):
         if len(validNeighbor) > 0:
             ontoDictFinal["clases"][mainConcept[1]] = set(validNeighbor)
     processOntodict(ontoDictFinal, ontopath,mtype)
+    log("Returning annotation status - finished annotation process")
     return status
 
 def updateConcepts(docId,ontoId,concepts):
     import coruja_database
-    ontopath = coruja_database.getOntology(ontoId)
+    ontopath = coruja_database.getOntology(str(ontoId))
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
@@ -411,7 +412,11 @@ def updateConcepts(docId,ontoId,concepts):
         document = result[0]
         document.documentHasConcept = []
         for concept in concepts:
-            ontoconcept = onto.Concept(concept.lower())
+            currentConceptSearch = onto.search(iri=onto.base_iri + concept.lower())
+            if len(currentConceptSearch):
+                ontoconcept = currentConceptSearch[0]
+            else:
+                ontoconcept = onto.Concept(concept.lower())
             ontoconcept.conceptInDocument.append(document)
     try:
         onto_file = open(ontopath, 'wb+')
