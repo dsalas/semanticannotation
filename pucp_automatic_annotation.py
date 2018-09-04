@@ -158,7 +158,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
         i=i+1
 
 def processOntodict(ontodict, ontopath, mtype):
-    log("Call to processOntodict()")
+    log("Call to processOntodict() with ontopath: " + ontopath)
     onto = get_ontology("file://" + ontopath)
     onto.load()
 
@@ -171,6 +171,7 @@ def processOntodict(ontodict, ontopath, mtype):
     clases = ontodict['clases']
     concepts = ontodict['concepts']
     if mtype == 1:
+        log("Generating clases...")
         for classkey, classelem in clases.items():
             ontoclass = classkey.title()
             with onto:
