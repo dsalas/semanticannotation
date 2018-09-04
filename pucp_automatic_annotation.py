@@ -404,7 +404,8 @@ def updateConcepts(docId,ontoId,concepts):
     except:
         log("Error loading ontology " + ontopath)
         return 0
-    result = onto.search(iri=onto.base_iri + docId)
+    log("Searching for " + onto.base_iri + str(docId))
+    result = onto.search(iri=onto.base_iri + str(docId))
     if (len(result)>0):
         document = result[0]
         document.documentHasConcept = []
@@ -418,5 +419,4 @@ def updateConcepts(docId,ontoId,concepts):
         log("Error saving ontology " + ontopath)
         return 0
     return 1
-
 
