@@ -343,7 +343,7 @@ def getConceptsFromOntology(documentId, ontoId):
     return getConcepts(documentId, ontopath)
 
 def annotateDocumentsInList(docList, ontoId,mtype):
-    log("Call to annotateDocumentsInPath()")
+    log("Call to annotateDocumentsInPath() type = " + str(mtype))
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
     status = []
