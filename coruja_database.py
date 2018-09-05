@@ -71,7 +71,7 @@ def getActiveOntologies():
     cursor = db.cursor()
     ontofiles = []
     try:
-        cursor.execute("SELECT * FROM `ontologia` WHERE Bo_OntHab = 1")
+        cursor.execute("SELECT * FROM `ontologia` WHERE Bo_OntEstado = 1")
         results = cursor.fetchall()
         for row in results:
             file = row[2]
@@ -105,3 +105,15 @@ def getOntology(ontoId):
         api_log.log("Error: unable to fetch data")
     db.close()
     return ontofile
+
+def setDocumentProcessed(docId):
+    db = connect()
+    cursor = db.cursor()
+    sql = "UPDATE documento SET Bo_DocProcesado = %d WHERE id_documento = %d" % (1,docId)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        db.rollback()
+    db.close()
+    return
