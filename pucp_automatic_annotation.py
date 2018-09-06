@@ -340,6 +340,7 @@ def getConcepts(documentId, ontoId):
                     result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
+    del getConceptsOnto
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
