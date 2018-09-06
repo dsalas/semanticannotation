@@ -420,11 +420,15 @@ def updateConcepts(docId,ontoId,concepts):
     if (len(result)>0):
         document = result[0]
         ontoConcepts = document.documentHasConcept
-        for concept in ontoConcepts:
-            if not concept.name in concepts:
-                log("updateConcepts(): Deleting concept: " + concept.name)
-                ontoConcepts.remove(concept)
-        document.documentHasConcept = ontoConcepts
+        if len(ontoConcepts) > 0:
+            for concept in ontoConcepts:
+                if not concept.name in concepts:
+                    log("updateConcepts(): Deleting concept: " + concept.name)
+                    ontoConcepts.remove(concept)
+            document.documentHasConcept = ontoConcepts
+        else:
+            log("updateConcepts(): No concepts found")
+            return 0
     try:
         onto_file = open(ontopath, 'wb+')
         onto.save(file=onto_file, format="rdfxml")
@@ -432,6 +436,7 @@ def updateConcepts(docId,ontoId,concepts):
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
         return 0
+    del onto
     return 1
 
 def updateConceptsOld(docId,ontoId,concepts):
