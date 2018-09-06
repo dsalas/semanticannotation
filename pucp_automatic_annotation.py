@@ -317,9 +317,9 @@ def getDocuments(query):
 
 def getConcepts(documentId, ontoId):
     from owlready2 import *
+    import coruja_database
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
-    import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
     getConceptsOnto = get_ontology("file://" + ontopath)
     try:
@@ -343,7 +343,7 @@ def getConcepts(documentId, ontoId):
                 result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
-    del getConceptsOnto
+    getConceptsOnto.destroy()
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
@@ -447,8 +447,8 @@ def updateConcepts(docId,ontoId,concepts):
 
 def updateConceptsOld(docId,ontoId,concepts):
     from owlready2 import *
-    log("call to updateConcepts()")
     import coruja_database
+    log("call to updateConcepts()")
     ontopath = coruja_database.getOntology(str(ontoId))
     onto = get_ontology("file://" + ontopath)
     try:
