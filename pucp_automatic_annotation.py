@@ -4,7 +4,6 @@
 import textract
 import nltk
 import tagging_implementation
-from owlready2 import *
 import json
 import time
 import os
@@ -70,6 +69,7 @@ def _createSet(clean):
     return concepts
 
 def createBaseOntology(filename, filepath):
+    from owlready2 import *
     import coruja_database
     onto = get_ontology(config.OntologyNamespace + filename + ".owl")
     class Document(Thing):
@@ -101,6 +101,7 @@ def createBaseOntology(filename, filepath):
     return onto_file.name, filenameOwl, uri
 
 def addDocumentConceptsToOntology(docid, path, concepts):
+    from owlready2 import *
     onto = get_ontology("file://" + path)
     onto.load()
     class Concept(Thing):
@@ -158,6 +159,7 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
         i=i+1
 
 def processOntodict(ontodict, ontopath, mtype):
+    from owlready2 import *
     log("Call to processOntodict() with ontopath: " + ontopath)
     onto = get_ontology("file://" + ontopath)
     onto.load()
@@ -269,6 +271,7 @@ def get_concepts(onto):
     return onto.search(is_a = onto.Concept)
 
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
+    from owlready2 import *
     log("Call to getDocumentsFromOntology(): " + ontopath)
     onto = get_ontology("file://" + ontopath)
     try:
@@ -313,6 +316,7 @@ def getDocuments(query):
     return processQuery(query, ontoPaths)
 
 def getConcepts(documentId, ontoId):
+    from owlready2 import *
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     import coruja_database
@@ -350,6 +354,7 @@ def getConceptsFromOntology(documentId, ontoId):
     return getConcepts(documentId, ontopath)
 
 def annotateDocumentsInList(docList, ontoId,mtype):
+    from owlready2 import *
     log("Call to annotateDocumentsInPath() type = " + str(mtype))
     import coruja_database
     ontopath = coruja_database.getOntology(ontoId)
@@ -404,6 +409,7 @@ def annotateDocumentsInList(docList, ontoId,mtype):
     return status
 
 def updateConcepts(docId,ontoId,concepts):
+    from owlready2 import *
     log("call to updateConcepts()")
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
@@ -440,6 +446,7 @@ def updateConcepts(docId,ontoId,concepts):
     return 1
 
 def updateConceptsOld(docId,ontoId,concepts):
+    from owlready2 import *
     log("call to updateConcepts()")
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
