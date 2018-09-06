@@ -420,6 +420,7 @@ def updateConcepts(docId,ontoId,concepts):
             else:
                 ontoconcept = onto.Concept(concept.lower())
             ontoconcept.conceptInDocument.append(document)
+            document.documentHasConcept.append(ontoconcept)
     try:
         onto_file = open(ontopath, 'wb+')
         onto.save(file=onto_file, format="rdfxml")
