@@ -331,7 +331,7 @@ def getConcepts(documentId, ontoId):
         with getConceptsOnto:
             concepts = document.documentHasConcept
             if len(concepts) > 0:
-                log("Concepts found: " + " ".join(concepts))
+                log("Concepts found: " + " ".join(map(str, concepts)))
             else:
                 log("No concepts found.")
             for concept in concepts:
