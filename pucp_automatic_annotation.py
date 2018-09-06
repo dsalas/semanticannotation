@@ -420,7 +420,7 @@ def updateConcepts(docId,ontoId,concepts):
         document = result[0]
         ontoConcepts = document.documentHasConcept
         for concept in ontoConcepts:
-            if concept.name in concepts:
+            if not concept.name in concepts:
                 log("updateConcepts(): Deleting concept: " + concept.name)
                 ontoConcepts.remove(concept)
         document.documentHasConcept = ontoConcepts
