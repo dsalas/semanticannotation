@@ -313,10 +313,10 @@ def getDocuments(query):
     return processQuery(query, ontoPaths)
 
 def getConcepts(documentId, ontoId):
-    log("Call to getConcepts(): docid = " + documentId + " - ontid = " + ontoId)  
+    log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     import coruja_database
-    ontopath = coruja_database.getOntology(ontoId)
+    ontopath = coruja_database.getOntology(str(ontoId))
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
@@ -335,7 +335,7 @@ def getConcepts(documentId, ontoId):
         for concept in concepts:
             result.append(concept.name)
     else:
-        log("No document found. docid = " + documentId)
+        log("No document found. docid = " + str(documentId))
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
