@@ -336,7 +336,8 @@ def getConcepts(documentId, ontoId):
             else:
                 log("No concepts found.")
             for concept in concepts:
-                result.append(concept.name)
+                if concept not in result:
+                    result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
     return result
