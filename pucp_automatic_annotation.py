@@ -418,6 +418,35 @@ def updateConcepts(docId,ontoId,concepts):
     result = onto.search(iri=onto.base_iri + str(docId))
     if (len(result)>0):
         document = result[0]
+        ontoConcepts = document.documentHasConcept
+        for concept in ontoConcepts:
+            if concept.name in concepts:
+                ontoConcepts.remove(concept)
+        document.documentHasConcept = ontoConcepts
+    try:
+        onto_file = open(ontopath, 'wb+')
+        onto.save(file=onto_file, format="rdfxml")
+        log("updateConcepts(): Saved ontology to " + ontopath)
+    except:
+        log("updateConcepts(): Error saving ontology " + ontopath)
+        return 0
+    return 1
+
+def updateConceptsOld(docId,ontoId,concepts):
+    log("call to updateConcepts()")
+    import coruja_database
+    ontopath = coruja_database.getOntology(str(ontoId))
+    onto = get_ontology("file://" + ontopath)
+    try:
+        onto.load()
+        log("updateConcepts(): Load ontology " + ontopath)
+    except:
+        log("updateConcepts(): Error loading ontology " + ontopath)
+        return 0
+    log("updateConcepts(): Searching for " + onto.base_iri + str(docId))
+    result = onto.search(iri=onto.base_iri + str(docId))
+    if (len(result)>0):
+        document = result[0]
         document.documentHasConcept = []
         for concept in concepts:
             currentConceptSearch = onto.search(iri=onto.base_iri + concept.lower())
@@ -435,4 +464,3 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Error saving ontology " + ontopath)
         return 0
     return 1
-
