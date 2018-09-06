@@ -317,23 +317,25 @@ def getConcepts(documentId, ontoId):
     result = []
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
-    onto = get_ontology("file://" + ontopath)
+    getConceptsOnto = get_ontology("file://" + ontopath)
     try:
-        onto.load()
+        getConceptsOnto.load()
+        log("Load ontology :" + ontopath)
     except:
         log("Error loading ontology " + ontopath)
         return result
-    documents = onto.search(iri =onto.base_iri+str(documentId))
+    documents = getConceptsOnto.search(iri =getConceptsOnto.base_iri+str(documentId))
     if len(documents) > 0:
         document = documents[0]
         log("Document found " + document.iri)
-        concepts = document.documentHasConcept
-        if len(concepts) > 0:
-            log("Concepts found.")
-        else: 
-            log("No concepts found.")
-        for concept in concepts:
-            result.append(concept.name)
+        with getConceptsOnto:
+            concepts = document.documentHasConcept
+            if len(concepts) > 0:
+                log("Concepts found: " + ' '.join(concepts))
+            else:
+                log("No concepts found.")
+            for concept in concepts:
+                result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
     return result
