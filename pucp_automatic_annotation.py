@@ -420,12 +420,13 @@ def updateConcepts(docId,ontoId,concepts):
     if (len(result)>0):
         document = result[0]
         ontoConcepts = document.documentHasConcept
+        keepConcepts = []
         if len(ontoConcepts) > 0:
             for concept in ontoConcepts:
                 if not concept.name in concepts:
                     log("updateConcepts(): Deleting concept: " + concept.name)
-                    ontoConcepts.remove(concept)
-            document.documentHasConcept = ontoConcepts
+                    keepConcepts.append(concept)
+            document.documentHasConcept = keepConcepts
         else:
             log("updateConcepts(): No concepts found")
             return 0
