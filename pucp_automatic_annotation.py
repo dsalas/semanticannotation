@@ -273,8 +273,8 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
-        with onto:
-            sync_reasoner()
+        #with onto:
+        #    sync_reasoner()
     except:
         log("Error loading ontology " + ontopath)
         return
@@ -329,7 +329,7 @@ def getConcepts(documentId, ontoId):
         document = documents[0]
         log("Document found " + document.iri)
         with getConceptsOnto:
-            sync_reasoner()
+            #sync_reasoner()
             concepts = document.documentHasConcept
             if len(concepts) > 0:
                 log("Concepts found: " + str(len(concepts)))
