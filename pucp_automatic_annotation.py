@@ -273,6 +273,8 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
+        with onto:
+            sync_reasoner()
     except:
         log("Error loading ontology " + ontopath)
         return
