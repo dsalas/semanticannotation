@@ -329,6 +329,7 @@ def getConcepts(documentId, ontoId):
         document = documents[0]
         log("Document found " + document.iri)
         with getConceptsOnto:
+            sync_reasoner()
             concepts = document.documentHasConcept
             if len(concepts) > 0:
                 log("Concepts found: " + str(len(concepts)))
@@ -402,15 +403,17 @@ def annotateDocumentsInList(docList, ontoId,mtype):
     return status
 
 def updateConcepts(docId,ontoId,concepts):
+    log("call to updateConcepts()")
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
     onto = get_ontology("file://" + ontopath)
     try:
         onto.load()
+        log("updateConcepts(): Load ontology " + ontopath)
     except:
-        log("Error loading ontology " + ontopath)
+        log("updateConcepts(): Error loading ontology " + ontopath)
         return 0
-    log("Searching for " + onto.base_iri + str(docId))
+    log("updateConcepts(): Searching for " + onto.base_iri + str(docId))
     result = onto.search(iri=onto.base_iri + str(docId))
     if (len(result)>0):
         document = result[0]
@@ -426,8 +429,9 @@ def updateConcepts(docId,ontoId,concepts):
     try:
         onto_file = open(ontopath, 'wb+')
         onto.save(file=onto_file, format="rdfxml")
+        log("updateConcepts(): Saved ontology to " + ontopath)
     except:
-        log("Error saving ontology " + ontopath)
+        log("updateConcepts(): Error saving ontology " + ontopath)
         return 0
     return 1
 
