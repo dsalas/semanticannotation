@@ -328,16 +328,15 @@ def getConcepts(documentId, ontoId):
     if len(documents) > 0:
         document = documents[0]
         log("Document found " + document.iri)
-        with getConceptsOnto:
-            #sync_reasoner()
-            concepts = document.documentHasConcept
-            if len(concepts) > 0:
-                log("Concepts found: " + str(len(concepts)))
-            else:
-                log("No concepts found.")
-            for concept in concepts:
-                if concept not in result:
-                    result.append(concept.name)
+        #with getConceptsOnto:
+        concepts = document.documentHasConcept
+        if len(concepts) > 0:
+            log("Concepts found: " + str(len(concepts)))
+        else:
+            log("No concepts found.")
+        for concept in concepts:
+            if concept not in result:
+                result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
     del getConceptsOnto
