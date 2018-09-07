@@ -339,6 +339,7 @@ def getConcepts(documentId, ontoId):
     else:
         log("No document found. docid = " + str(documentId))
     try:
+        log("Trying to destroy " + getConceptsOnto.base_iri )
         getConceptsOnto.destroy()
     except:
         log("Can not destroy ontology loaded")
