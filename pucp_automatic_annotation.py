@@ -312,9 +312,7 @@ def getDocuments(query):
     return processQuery(query, ontoPaths)
 
 def getConcepts(documentId, ontoId):
-
     import coruja_database
-    log(sys.version)
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     ontopath = coruja_database.getOntology(str(ontoId))
@@ -340,7 +338,10 @@ def getConcepts(documentId, ontoId):
                 result.append(concept.name)
     else:
         log("No document found. docid = " + str(documentId))
-    getConceptsOnto.destroy()
+    try:
+        getConceptsOnto.destroy()
+    except:
+        log("Can not destroy ontology loaded")
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
