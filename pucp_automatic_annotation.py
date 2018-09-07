@@ -4,7 +4,6 @@
 import textract
 import nltk
 import tagging_implementation
-import json
 import time
 import os
 sys.path.append(os.path.dirname(__file__))
@@ -318,7 +317,6 @@ def getDocuments(query):
 def getConcepts(documentId, ontoId):
     from owlready2 import *
     import coruja_database
-    import sys
     log(sys.version)
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
