@@ -14,6 +14,7 @@ import string
 import math
 from api_log import log
 from owlready2 import *
+from shutil import copyfile
 
 def _getText(filename):
     decoded = ""
@@ -316,12 +317,15 @@ def getConcepts(documentId, ontoId):
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     ontopath = coruja_database.getOntology(str(ontoId))
-    getConceptsOnto = get_ontology("file://" + ontopath)
+    tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
+    copyfile(ontopath, tmpFilename)
+    log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
+    getConceptsOnto = get_ontology("file://" + tmpFilename)
     try:
         getConceptsOnto.load()
-        log("Load ontology :" + ontopath)
+        log("Load ontology :" + tmpFilename)
     except:
-        log("Error loading ontology " + ontopath)
+        log("Error loading ontology " + tmpFilename)
         return result
     documents = getConceptsOnto.search(iri =getConceptsOnto.base_iri+str(documentId))
     if len(documents) > 0:
@@ -339,6 +343,8 @@ def getConcepts(documentId, ontoId):
     else:
         log("No document found. docid = " + str(documentId))
 
+    os.remove(tmpFilename)
+    log("getConcepts(): Deleting temp file " + tmpFilename)
     log("Trying to destroy " + getConceptsOnto.base_iri )
     try:
         getConceptsOnto.destroy()
