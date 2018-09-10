@@ -348,6 +348,7 @@ def getConcepts(documentId, ontoId):
     log("Trying to destroy " + getConceptsOnto.base_iri )
     try:
         getConceptsOnto.destroy()
+        getConceptsOnto.world = {}
         log("Ontology destroyed")
     except:
         log("Can not destroy ontology loaded")
