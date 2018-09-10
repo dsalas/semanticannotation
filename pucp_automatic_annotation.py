@@ -328,6 +328,7 @@ def getConcepts(documentId, ontoId):
         log("Error loading ontology " + tmpFilename)
         return result
     documents = getConceptsOnto.search(iri =getConceptsOnto.base_iri+str(documentId))
+    log("Onto world debug: " + str(getConceptsOnto.world.ontologies))
     if len(documents) > 0:
         document = documents[0]
         log("Document found " + document.iri)
