@@ -332,10 +332,6 @@ def getConcepts(documentId, ontoId):
         document = documents[0]
         log("Document found " + document.iri)
         with getConceptsOnto:
-            class documentHasConcept(ObjectProperty):
-                namespace = getConceptsOnto
-                domain = [getConceptsOnto.Document]
-                range = [getConceptsOnto.Concept]
             concepts = document.documentHasConcept
             if len(concepts) > 0:
                 log("Concepts found: " + str(len(concepts)))
