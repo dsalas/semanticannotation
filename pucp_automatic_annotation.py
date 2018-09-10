@@ -332,15 +332,20 @@ def getConcepts(documentId, ontoId):
     if len(documents) > 0:
         document = documents[0]
         log("Document found " + document.iri)
-        with getConceptsOnto:
+        trycounter = 100
+        concepts = []
+        while (trycounter != 0):
             concepts = document.documentHasConcept
             if len(concepts) > 0:
-                log("Concepts found: " + str(len(concepts)))
-            else:
-                log("No concepts found.")
-            for concept in concepts:
-                if concept not in result:
-                    result.append(concept.name)
+                break;
+            trycounter -= 1
+        for concept in concepts:
+            if concept not in result:
+                result.append(concept.name)
+        if len(concepts) > 0:
+            log("Concepts found: " + str(len(concepts)))
+        else:
+            log("No concepts found.")
     else:
         log("No document found. docid = " + str(documentId))
 
