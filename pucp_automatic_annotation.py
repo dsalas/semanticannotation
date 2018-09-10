@@ -211,6 +211,7 @@ def processOntodict(ontodict, ontopath, mtype):
         onto.save(file=onto_file, format="rdfxml")
         log("Saved file to path " + ontopath)
         onto_file.close()
+        onto.destroy()
         return True
     except:
         return False
@@ -338,6 +339,12 @@ def getConcepts(documentId, ontoId):
             concepts = document.documentHasConcept
             if len(concepts) > 0:
                 break;
+            else:
+                try:
+                    getConceptsOnto.load()
+                except:
+                    log("Error loading ontology " + tmpFilename)
+                    return result
             trycounter -= 1
         for concept in concepts:
             if concept not in result:
