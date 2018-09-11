@@ -273,10 +273,11 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         onto.load()
         #with onto:
         #    sync_reasoner()
+        log("getDocumentsFromOntology(): Loaded ontology " + ontopath)
     except:
-        log("Error loading ontology " + ontopath)
+        log("getDocumentsFromOntology(): Error loading ontology " + ontopath)
         return
-    log("Onto world debug: " + str(onto.world.ontologies))
+    log("getDocumentsFromOntology(): Onto world debug: " + str(onto.world.ontologies))
     ontoconcepts = onto.search(is_a = onto.Concept)
     scores = []
     for concept in ontoconcepts:
@@ -298,10 +299,10 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
             if document.name not in resultDocuments:
                 resultDocuments.append(document.name)
     try:
-        log("Call to destroy() ontology " + ontopath)
+        log("getDocumentsFromOntology(): Call to destroy() ontology " + ontopath)
         onto.destroy()
     except:
-        log("Can't destroy ontology " + ontopath)
+        log("getDocumentsFromOntology(): Can't destroy ontology " + ontopath)
 
 def processQuery(query,ontoPaths):
     cleaned = _cleanQuery(query)
