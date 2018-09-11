@@ -302,7 +302,10 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         for document in documents:
             if document.name not in resultDocuments:
                 resultDocuments.append(document.name)
-    onto.destroy()
+    try:
+        onto.destroy()
+    except:
+        log("Can't destroy ontology " + ontopath)
 
 def processQuery(query,ontoPaths):
     cleaned = _cleanQuery(query)
