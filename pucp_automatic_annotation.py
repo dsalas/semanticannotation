@@ -164,11 +164,11 @@ def processOntodict(ontodict, ontopath, mtype):
     onto = get_ontology("file://" + ontopath)
     onto.load()
 
-    class Concept(Thing):
-        namespace = onto
+    #class Concept(Thing):
+    #    namespace = onto
 
-    class Document(Thing):
-        namespace = onto
+    #class Document(Thing):
+    #    namespace = onto
 
     clases = ontodict['clases']
     concepts = ontodict['concepts']
@@ -177,19 +177,9 @@ def processOntodict(ontodict, ontopath, mtype):
         for classkey, classelem in clases.items():
             ontoclass = classkey.title()
             with onto:
-                NewClass = types.new_class(ontoclass, (Concept,), kwds={})
+                NewClass = types.new_class(ontoclass, (onto.Concept,), kwds={})
                 for elem in classelem:
                     NewClass(elem.lower())
-
-    class documentHasConcept(ObjectProperty):
-        namespace = onto
-        domain = [Document]
-        range = [Concept]
-
-    class conceptInDocument(ObjectProperty):
-        namespace = onto
-        domain = [Concept]
-        range = [Document]
 
     for concept in concepts:
         docid = concept[1]
@@ -199,12 +189,12 @@ def processOntodict(ontodict, ontopath, mtype):
             if len(currentDocumentSearch) > 0:
                 currentDocument =  currentDocumentSearch[0]
             else:
-                currentDocument = Document(docid)
+                currentDocument = onto.Document(docid)
             currentConceptSearch = onto.search(iri = onto.base_iri + conceptname.lower())
             if len(currentConceptSearch):
                 currentConcept = currentConceptSearch[0]
             else:
-                currentConcept = Concept(conceptname.lower())
+                currentConcept = onto.Concept(conceptname.lower())
             currentDocument.documentHasConcept.append(currentConcept)
             currentConcept.conceptInDocument.append(currentDocument)
 
@@ -213,9 +203,11 @@ def processOntodict(ontodict, ontopath, mtype):
         onto.save(file=onto_file, format="rdfxml")
         log("Saved file to path " + ontopath)
         onto_file.close()
+        log("Call to destroy ontolgy: " + ontopath)
         onto.destroy()
         return True
     except:
+        log("Error saving ontology, destroying object: " + ontopath)
         onto.destroy()
         return False
 
@@ -267,11 +259,6 @@ def saveFileToBd(path):
     ts = round(time.time())
     return ts
 
-def get_concepts(onto):
-    #with onto:
-    #    sync_reasoner()
-    return onto.search(is_a = onto.Concept)
-
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     log("Call to getDocumentsFromOntology(): " + ontopath)
     onto = get_ontology("file://" + ontopath)
@@ -283,7 +270,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         log("Error loading ontology " + ontopath)
         return
     log("Onto world debug: " + str(onto.world.ontologies))
-    ontoconcepts = get_concepts(onto)
+    ontoconcepts = onto.search(is_a = onto.Concept)
     scores = []
     for concept in ontoconcepts:
         score = -1
@@ -343,19 +330,8 @@ def getConcepts(documentId, ontoId):
         document = documents[0]
         log("Document found " + document.iri)
         trycounter = 100
-        concepts = []
-        while (trycounter != 0):
-            concepts = document.documentHasConcept
-            if len(concepts) > 0:
-                break;
-            else:
-                try:
-                    getConceptsOnto.destroy()
-                    getConceptsOnto.load()
-                except:
-                    log("Error loading ontology " + tmpFilename)
-                    return result
-            trycounter -= 1
+        #concepts = []
+        concepts = document.documentHasConcept
         for concept in concepts:
             if concept not in result:
                 result.append(concept.name)
