@@ -282,6 +282,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     except:
         log("Error loading ontology " + ontopath)
         return
+    log("Onto world debug: " + str(onto.world.ontologies))
     ontoconcepts = get_concepts(onto)
     scores = []
     for concept in ontoconcepts:
@@ -303,6 +304,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
             if document.name not in resultDocuments:
                 resultDocuments.append(document.name)
     try:
+        log("Call to destroy() ontology " + ontopath)
         onto.destroy()
     except:
         log("Can't destroy ontology " + ontopath)
