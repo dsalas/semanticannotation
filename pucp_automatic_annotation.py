@@ -71,7 +71,9 @@ def _createSet(clean):
 
 def createBaseOntology(filename, filepath):
     import coruja_database
-    onto = get_ontology(config.OntologyNamespace + filename + ".owl")
+    ontofileName = config.OntologyNamespace + filename + ".owl"
+    onto = get_ontology(ontofileName)
+    log("Creating ontology " + ontofileName)
     class Document(Thing):
         namespace = onto
 
@@ -98,6 +100,11 @@ def createBaseOntology(filename, filepath):
     onto_file = open(filepath + filenameOwl, 'wb+')
     onto.save(file=onto_file, format="rdfxml")
     coruja_database.insertOntology(uri, filenameOwl, filepath)
+    try:
+        log("Trying to destroy: " + onto.base_iri)
+        onto.destroy()
+    except:
+        log("Can't destroy ontology")
     return onto_file.name, filenameOwl, uri
 
 def addDocumentConceptsToOntology(docid, path, concepts):
