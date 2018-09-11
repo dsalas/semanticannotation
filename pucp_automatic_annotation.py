@@ -323,7 +323,7 @@ def getConcepts(documentId, ontoId):
     log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
     getConceptsOnto = get_ontology("file://" + tmpFilename)
     try:
-        getConceptsOnto.load(only_local = True)
+        getConceptsOnto.load()
         log("Load ontology :" + tmpFilename)
     except:
         log("Error loading ontology " + tmpFilename)
@@ -342,7 +342,7 @@ def getConcepts(documentId, ontoId):
             else:
                 try:
                     getConceptsOnto.destroy()
-                    getConceptsOnto.load(only_local = True)
+                    getConceptsOnto.load()
                 except:
                     log("Error loading ontology " + tmpFilename)
                     return result
@@ -462,7 +462,7 @@ def updateConcepts(docId,ontoId,concepts):
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
         return 0
-    del onto
+    onto.destroy()
     return 1
 
 def updateConceptsOld(docId,ontoId,concepts):
