@@ -119,8 +119,10 @@ def addDocumentConceptsToOntology(docid, path, concepts):
     onto_file = open(path, 'wb+')
     try:
         onto.save(file=onto_file, format="rdfxml")
+        onto.destroy()
         return True
     except:
+        onto.destroy()
         return False
 
 def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_postagger, lemmaDict):
@@ -214,6 +216,7 @@ def processOntodict(ontodict, ontopath, mtype):
         onto.destroy()
         return True
     except:
+        onto.destroy()
         return False
 
 def annotateDocumentsInPath(path, ontopath):
@@ -299,6 +302,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         for document in documents:
             if document.name not in resultDocuments:
                 resultDocuments.append(document.name)
+    onto.destroy()
 
 def processQuery(query,ontoPaths):
     cleaned = _cleanQuery(query)
@@ -461,6 +465,7 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
+        onto.destroy()
         return 0
     onto.destroy()
     return 1
@@ -495,5 +500,7 @@ def updateConceptsOld(docId,ontoId,concepts):
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
+        onto.destroy()
         return 0
+    onto.destroy()
     return 1
