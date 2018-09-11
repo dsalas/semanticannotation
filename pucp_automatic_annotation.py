@@ -321,21 +321,24 @@ def getConcepts(documentId, ontoId):
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     ontopath = coruja_database.getOntology(str(ontoId))
-    tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
-    copyfile(ontopath, tmpFilename)
-    log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
-    getConceptsOnto = get_ontology("file://" + tmpFilename)
+    #tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
+    #copyfile(ontopath, tmpFilename)
+    #log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
+    #getConceptsOnto = get_ontology("file://" + tmpFilename)
+    getConceptsOnto = get_ontology("file://" + ontopath)
     try:
         getConceptsOnto.load()
-        log("Load ontology :" + tmpFilename)
+        #log("Load ontology :" + tmpFilename)
+        log("getConcepts(): Load ontology :" + ontopath)
     except:
-        log("Error loading ontology " + tmpFilename)
+        #log("Error loading ontology " + tmpFilename)
+        log("getConcepts(): Error loading ontology " + ontopath)
         return result
     documents = getConceptsOnto.search(iri =getConceptsOnto.base_iri+str(documentId))
-    log("Onto world debug: " + str(getConceptsOnto.world.ontologies))
+    log("getConcepts(): Onto world debug: " + str(getConceptsOnto.world.ontologies))
     if len(documents) > 0:
         document = documents[0]
-        log("Document found " + document.iri)
+        log("getConcepts(): Document found " + document.iri)
         trycounter = 100
         #concepts = []
         concepts = document.documentHasConcept
@@ -343,20 +346,20 @@ def getConcepts(documentId, ontoId):
             if concept not in result:
                 result.append(concept.name)
         if len(concepts) > 0:
-            log("Concepts found: " + str(len(concepts)))
+            log("getConcepts(): Concepts found: " + str(len(concepts)))
         else:
-            log("No concepts found.")
+            log("getConcepts(): No concepts found.")
     else:
         log("No document found. docid = " + str(documentId))
 
-    os.remove(tmpFilename)
-    log("getConcepts(): Deleting temp file " + tmpFilename)
-    log("Trying to destroy " + getConceptsOnto.base_iri )
+    #os.remove(tmpFilename)
+    #log("getConcepts(): Deleting temp file " + tmpFilename)
+    log("getConcepts(): Trying to destroy " + getConceptsOnto.base_iri )
     try:
         getConceptsOnto.destroy()
-        log("Ontology destroyed")
+        log("getConcepts(): Ontology destroyed")
     except:
-        log("Can not destroy ontology loaded")
+        log("getConcepts(): Can not destroy ontology loaded")
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
@@ -450,16 +453,20 @@ def updateConcepts(docId,ontoId,concepts):
             return 0
     else:
         log("updateConcepts(): Document not found id="+str(docId))
+    status = 1
     try:
         onto_file = open(ontopath, 'wb+')
         onto.save(file=onto_file, format="rdfxml")
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
+        status = 0
+    try:
+        log("updateConcepts(): Destroying ontology " + onto.base_iri)
         onto.destroy()
-        return 0
-    onto.destroy()
-    return 1
+    except:
+        log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
+    return status
 
 def updateConceptsOld(docId,ontoId,concepts):
     import coruja_database
