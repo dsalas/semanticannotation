@@ -102,7 +102,7 @@ def createBaseOntology(filename, filepath):
     coruja_database.insertOntology(uri, filenameOwl, filepath)
     try:
         log("Trying to destroy: " + onto.base_iri)
-        onto.destroy()
+        del onto
     except:
         log("Can't destroy ontology")
     return onto_file.name, filenameOwl, uri
@@ -126,10 +126,10 @@ def addDocumentConceptsToOntology(docid, path, concepts):
     onto_file = open(path, 'wb+')
     try:
         onto.save(file=onto_file, format="rdfxml")
-        onto.destroy()
+        del onto
         return True
     except:
-        onto.destroy()
+        del onto
         return False
 
 def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_postagger, lemmaDict):
@@ -211,11 +211,11 @@ def processOntodict(ontodict, ontopath, mtype):
         log("Saved file to path " + ontopath)
         onto_file.close()
         log("Call to destroy ontolgy: " + ontopath)
-        onto.destroy()
+        del onto
         return True
     except:
         log("Error saving ontology, destroying object: " + ontopath)
-        onto.destroy()
+        del onto
         return False
 
 def annotateDocumentsInPath(path, ontopath):
@@ -300,7 +300,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
                 resultDocuments.append(document.name)
     try:
         log("getDocumentsFromOntology(): Call to destroy() ontology " + ontopath)
-        onto.destroy()
+        del onto
     except:
         log("getDocumentsFromOntology(): Can't destroy ontology " + ontopath)
 
@@ -357,7 +357,7 @@ def getConcepts(documentId, ontoId):
     #log("getConcepts(): Deleting temp file " + tmpFilename)
     log("getConcepts(): Trying to destroy " + getConceptsOnto.base_iri )
     try:
-        getConceptsOnto.destroy()
+        del getConceptsOnto
         log("getConcepts(): Ontology destroyed")
     except:
         log("getConcepts(): Can not destroy ontology loaded")
@@ -464,7 +464,7 @@ def updateConcepts(docId,ontoId,concepts):
         status = 0
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
-        onto.destroy()
+        del onto
     except:
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
     return status
@@ -499,7 +499,7 @@ def updateConceptsOld(docId,ontoId,concepts):
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
-        onto.destroy()
+        del onto
         return 0
-    onto.destroy()
+    del onto
     return 1
