@@ -322,26 +322,25 @@ def getConcepts(documentId, ontoId):
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     ontopath = coruja_database.getOntology(str(ontoId))
-    #tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
-    #copyfile(ontopath, tmpFilename)
-    #log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
-    #getConceptsOnto = get_ontology("file://" + tmpFilename)
-    getConceptsOnto = get_ontology("file://" + ontopath)
+    #Read temp file
+    tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
+    copyfile(ontopath, tmpFilename)
+    log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
+    getConceptsOnto = get_ontology("file://" + tmpFilename)
+    #getConceptsOnto = get_ontology("file://" + ontopath)
     try:
         getConceptsOnto.load()
-        #log("Load ontology :" + tmpFilename)
-        log("getConcepts(): Load ontology :" + ontopath)
+        log("getConcepts(): Load ontology :" + tmpFilename)
+        #log("getConcepts(): Load ontology :" + ontopath)
     except:
-        #log("Error loading ontology " + tmpFilename)
-        log("getConcepts(): Error loading ontology " + ontopath)
+        log("getConcepts(): Error loading ontology " + tmpFilename)
+        #log("getConcepts(): Error loading ontology " + ontopath)
         return result
     documents = getConceptsOnto.search(iri =getConceptsOnto.base_iri+str(documentId))
     log("getConcepts(): Onto world debug: " + str(getConceptsOnto.world.ontologies))
     if len(documents) > 0:
         document = documents[0]
         log("getConcepts(): Document found " + document.iri)
-        trycounter = 100
-        #concepts = []
         concepts = document.documentHasConcept
         for concept in concepts:
             if concept not in result:
@@ -353,8 +352,8 @@ def getConcepts(documentId, ontoId):
     else:
         log("No document found. docid = " + str(documentId))
 
-    #os.remove(tmpFilename)
-    #log("getConcepts(): Deleting temp file " + tmpFilename)
+    os.remove(tmpFilename)
+    log("getConcepts(): Deleting temp file " + tmpFilename)
     log("getConcepts(): Trying to destroy " + getConceptsOnto.base_iri )
     try:
         del getConceptsOnto
