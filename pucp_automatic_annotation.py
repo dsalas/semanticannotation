@@ -464,6 +464,8 @@ def updateConcepts(docId,ontoId,concepts):
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
         del onto
+        onto_file.close()
+        del onto_file
     except:
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
     return status
