@@ -340,6 +340,7 @@ def getConcepts(documentId, ontoId):
     log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
     import owlready2
     getConceptsOnto = owlready2.get_ontology("file://" + tmpFilename)
+    log("getConcepts(): Onto world debug before load: " + str(getConceptsOnto.world.ontologies))
     #getConceptsOnto = get_ontology("file://" + ontopath)
     try:
         getConceptsOnto.load()
