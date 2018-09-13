@@ -274,7 +274,7 @@ def saveFileToBd(path):
 
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     log("Call to getDocumentsFromOntology(): " + ontopath)
-    onto = get_ontology("file://" + ontopath)
+    onto = owlready2.get_ontology("file://" + ontopath)
     try:
         onto.load()
         #with onto:
@@ -308,6 +308,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         log("getDocumentsFromOntology(): Call to destroy() ontology " + ontopath)
         onto.destroy()
         del onto
+        del owlready2
     except:
         log("getDocumentsFromOntology(): Can't destroy ontology " + ontopath)
     gc.collect()
@@ -365,6 +366,7 @@ def getConcepts(documentId, ontoId):
     log("getConcepts(): Trying to destroy " + getConceptsOnto.base_iri )
     try:
         del getConceptsOnto
+        del owlready2
         log("getConcepts(): Ontology destroyed")
     except:
         log("getConcepts(): Can not destroy ontology loaded")
@@ -475,6 +477,7 @@ def updateConcepts(docId,ontoId,concepts):
         onto.destroy()
         del onto
         onto_file.close()
+        del owlready2
         del onto_file
     except:
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
