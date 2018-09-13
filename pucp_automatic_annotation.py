@@ -13,7 +13,7 @@ import pandas as pd
 import string
 import math
 from api_log import log
-from owlready2 import *
+#from owlready2 import *
 from shutil import copyfile
 import gc
 
@@ -73,20 +73,21 @@ def _createSet(clean):
 def createBaseOntology(filename, filepath):
     import coruja_database
     ontofileName = config.OntologyNamespace + filename + ".owl"
-    onto = get_ontology(ontofileName)
+    import owlready2
+    onto = owlready2.get_ontology(ontofileName)
     log("Creating ontology " + ontofileName)
-    class Document(Thing):
+    class Document(owlready2.Thing):
         namespace = onto
 
-    class Concept(Thing):
+    class Concept(owlready2.Thing):
         namespace = onto
 
-    class documentHasConcept(ObjectProperty):
+    class documentHasConcept(owlready2.ObjectProperty):
         namespace = onto
         domain = [Document]
         range = [Concept]
 
-    class conceptInDocument(ObjectProperty):
+    class conceptInDocument(owlready2.ObjectProperty):
         namespace = onto
         domain = [Concept]
         range = [Document]
@@ -110,15 +111,16 @@ def createBaseOntology(filename, filepath):
     return onto_file.name, filenameOwl, uri
 
 def addDocumentConceptsToOntology(docid, path, concepts):
-    onto = get_ontology("file://" + path)
+    import owlready2
+    onto = owlready2.get_ontology("file://" + path)
     onto.load()
-    class Concept(Thing):
+    class Concept(owlready2.Thing):
         namespace = onto
-    class Document(Thing):
+    class Document(owlready2.Thing):
         namespace = onto
 
     currentDocument = Document(docid)
-    class documentHasConcept(ObjectProperty):
+    class documentHasConcept(owlready2.ObjectProperty):
         namespace = onto
         domain = [Document]
         range = [Concept]
@@ -172,7 +174,8 @@ def processDocument(docid, filepath, ontoDict, maxWordDistance, df, spanish_post
 
 def processOntodict(ontodict, ontopath, mtype):
     log("Call to processOntodict() with ontopath: " + ontopath)
-    onto = get_ontology("file://" + ontopath)
+    import owlready2
+    onto = owlready2.get_ontology("file://" + ontopath)
     onto.load()
 
     #class Concept(Thing):
@@ -188,7 +191,7 @@ def processOntodict(ontodict, ontopath, mtype):
         for classkey, classelem in clases.items():
             ontoclass = classkey.title()
             with onto:
-                NewClass = types.new_class(ontoclass, (onto.Concept,), kwds={})
+                NewClass = owlready2.types.new_class(ontoclass, (onto.Concept,), kwds={})
                 for elem in classelem:
                     NewClass(elem.lower())
 
@@ -268,12 +271,9 @@ def annotateDocumentsInPath(path, ontopath):
     processOntodict(ontoDictFinal, ontopath, 1)
     return status
 
-def saveFileToBd(path):
-    ts = round(time.time())
-    return ts
-
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     log("Call to getDocumentsFromOntology(): " + ontopath)
+    import owlready2
     onto = owlready2.get_ontology("file://" + ontopath)
     try:
         onto.load()
@@ -335,7 +335,8 @@ def getConcepts(documentId, ontoId):
     tmpFilename = config.OntologyDir + str(int(time.time())) + "_tmp.owl"
     copyfile(ontopath, tmpFilename)
     log("getConcepts(): Copied ontology from " + ontopath + " to " + tmpFilename)
-    getConceptsOnto = get_ontology("file://" + tmpFilename)
+    import owlready2
+    getConceptsOnto = owlready2.get_ontology("file://" + tmpFilename)
     #getConceptsOnto = get_ontology("file://" + ontopath)
     try:
         getConceptsOnto.load()
@@ -438,7 +439,8 @@ def updateConcepts(docId,ontoId,concepts):
     log("Call to updateConcepts()")
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
-    onto = get_ontology("file://" + ontopath)
+    import owlready2
+    onto = owlready2.get_ontology("file://" + ontopath)
     try:
         onto.load()
         log("updateConcepts(): Load ontology " + ontopath)
