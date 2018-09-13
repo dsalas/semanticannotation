@@ -328,6 +328,7 @@ def getDocuments(query):
 
 def getConcepts(documentId, ontoId):
     import coruja_database
+    import time
     log("Call to getConcepts(): docid = " + str(documentId) + " - ontid = " + str(ontoId))
     result = []
     ontopath = coruja_database.getOntology(str(ontoId))
