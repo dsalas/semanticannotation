@@ -102,6 +102,7 @@ def createBaseOntology(filename, filepath):
     coruja_database.insertOntology(uri, filenameOwl, filepath)
     try:
         log("Trying to destroy: " + onto.base_iri)
+        onto.destroy()
         del onto
     except:
         log("Can't destroy ontology")
@@ -126,9 +127,11 @@ def addDocumentConceptsToOntology(docid, path, concepts):
     onto_file = open(path, 'wb+')
     try:
         onto.save(file=onto_file, format="rdfxml")
+        onto.destroy()
         del onto
         return True
     except:
+        onto.destroy()
         del onto
         return False
 
@@ -211,10 +214,12 @@ def processOntodict(ontodict, ontopath, mtype):
         log("Saved file to path " + ontopath)
         onto_file.close()
         log("Call to destroy ontolgy: " + ontopath)
+        onto.destroy()
         del onto
         return True
     except:
         log("Error saving ontology, destroying object: " + ontopath)
+        onto.destroy()
         del onto
         return False
 
@@ -300,6 +305,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
                 resultDocuments.append(document.name)
     try:
         log("getDocumentsFromOntology(): Call to destroy() ontology " + ontopath)
+        onto.destroy()
         del onto
     except:
         log("getDocumentsFromOntology(): Can't destroy ontology " + ontopath)
@@ -463,6 +469,7 @@ def updateConcepts(docId,ontoId,concepts):
         status = 0
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
+        onto.destroy()
         del onto
         onto_file.close()
         del onto_file
@@ -470,37 +477,3 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
     return status
 
-def updateConceptsOld(docId,ontoId,concepts):
-    import coruja_database
-    log("call to updateConcepts()")
-    ontopath = coruja_database.getOntology(str(ontoId))
-    onto = get_ontology("file://" + ontopath)
-    try:
-        onto.load()
-        log("updateConcepts(): Load ontology " + ontopath)
-    except:
-        log("updateConcepts(): Error loading ontology " + ontopath)
-        return 0
-    log("updateConcepts(): Searching for " + onto.base_iri + str(docId))
-    result = onto.search(iri=onto.base_iri + str(docId))
-    if (len(result)>0):
-        document = result[0]
-        document.documentHasConcept = []
-        for concept in concepts:
-            currentConceptSearch = onto.search(iri=onto.base_iri + concept.lower())
-            if len(currentConceptSearch):
-                ontoconcept = currentConceptSearch[0]
-            else:
-                ontoconcept = onto.Concept(concept.lower())
-            document.documentHasConcept.append(ontoconcept)
-            ontoconcept.conceptInDocument.append(document)
-    try:
-        onto_file = open(ontopath, 'wb+')
-        onto.save(file=onto_file, format="rdfxml")
-        log("updateConcepts(): Saved ontology to " + ontopath)
-    except:
-        log("updateConcepts(): Error saving ontology " + ontopath)
-        del onto
-        return 0
-    del onto
-    return 1
