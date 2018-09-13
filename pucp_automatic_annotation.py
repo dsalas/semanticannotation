@@ -276,6 +276,7 @@ def annotateDocumentsInPath(path, ontopath):
 def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
     log("Call to getDocumentsFromOntology(): " + ontopath)
     import owlready2
+    owlready2.default_world.ontologies.clear()
     onto = owlready2.get_ontology("file://" + ontopath)
     try:
         onto.load()
@@ -446,6 +447,7 @@ def updateConcepts(docId,ontoId,concepts):
     import coruja_database
     ontopath = coruja_database.getOntology(str(ontoId))
     import owlready2
+    owlready2.default_world.ontologies.clear()
     onto = owlready2.get_ontology("file://" + ontopath)
     log("updateConcepts(): Onto world debug after load: " + str(onto.world.ontologies))
     try:
