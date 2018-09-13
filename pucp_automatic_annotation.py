@@ -367,6 +367,7 @@ def getConcepts(documentId, ontoId):
     log("getConcepts(): Deleting temp file " + tmpFilename)
     log("getConcepts(): Trying to destroy " + getConceptsOnto.base_iri )
     try:
+        getConceptsOnto.destroy()
         del getConceptsOnto
         del owlready2
         log("getConcepts(): Ontology destroyed")
@@ -442,6 +443,7 @@ def updateConcepts(docId,ontoId,concepts):
     ontopath = coruja_database.getOntology(str(ontoId))
     import owlready2
     onto = owlready2.get_ontology("file://" + ontopath)
+    log("updateConcepts(): Onto world debug after get: " + str(onto.world.ontologies))
     try:
         onto.load()
         log("updateConcepts(): Load ontology " + ontopath)
