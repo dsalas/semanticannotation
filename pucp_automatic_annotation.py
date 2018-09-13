@@ -220,11 +220,13 @@ def processOntodict(ontodict, ontopath, mtype):
         log("Call to destroy ontolgy: " + ontopath)
         onto.destroy()
         del onto
+        del owlready2
         return True
     except:
         log("Error saving ontology, destroying object: " + ontopath)
         onto.destroy()
         del onto
+        del owlready2
         return False
 
 def annotateDocumentsInPath(path, ontopath):
