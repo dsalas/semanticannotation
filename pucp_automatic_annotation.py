@@ -452,6 +452,7 @@ def updateConcepts(docId,ontoId,concepts):
         return 0
     log("updateConcepts(): Onto world debug: " + str(onto.world.ontologies))
     log("updateConcepts(): Searching for " + onto.base_iri + str(docId))
+    status = 1
     result = onto.search(iri=onto.base_iri + str(docId))
     if (len(result)>0):
         document = result[0]
@@ -466,18 +467,22 @@ def updateConcepts(docId,ontoId,concepts):
             document.documentHasConcept = keepConcepts
         else:
             log("updateConcepts(): No concepts found")
-            return 0
+            status = 0
     else:
-        log("updateConcepts(): Document not found id="+str(docId))
-    status = 1
-    try:
-        # onto_file = open(ontopath, 'wb+')
-        onto.save(file=ontopath, format="rdfxml")
-        #onto_file.close()
-        log("updateConcepts(): Saved ontology to " + ontopath)
-    except:
-        log("updateConcepts(): Error saving ontology " + ontopath)
         status = 0
+        log("updateConcepts(): Document not found id="+str(docId))
+
+    if status == 1:
+        try:
+            # onto_file = open(ontopath, 'wb+')
+            onto.save(file=ontopath, format="rdfxml")
+            #onto_file.close()
+            log("updateConcepts(): Saved ontology to " + ontopath)
+        except:
+            log("updateConcepts(): Error saving ontology " + ontopath)
+            status = 0
+    else:
+        log("updateConcepts(): Empty ontology loaded " + ontopath)
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
         #del onto_file
