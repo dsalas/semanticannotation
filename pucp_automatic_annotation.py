@@ -15,6 +15,7 @@ import math
 from api_log import log
 from owlready2 import *
 from shutil import copyfile
+import gc
 
 def _getText(filename):
     decoded = ""
@@ -309,6 +310,7 @@ def getDocumentsFromOntology(concepts, ontopath, resultDocuments):
         del onto
     except:
         log("getDocumentsFromOntology(): Can't destroy ontology " + ontopath)
+    gc.collect()
 
 def processQuery(query,ontoPaths):
     cleaned = _cleanQuery(query)
@@ -366,6 +368,7 @@ def getConcepts(documentId, ontoId):
         log("getConcepts(): Ontology destroyed")
     except:
         log("getConcepts(): Can not destroy ontology loaded")
+    gc.collect()
     return result
 
 def getConceptsFromOntology(documentId, ontoId):
@@ -475,5 +478,6 @@ def updateConcepts(docId,ontoId,concepts):
         del onto_file
     except:
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
+    gc.collect()
     return status
 
