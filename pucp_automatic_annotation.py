@@ -471,6 +471,7 @@ def updateConcepts(docId,ontoId,concepts):
     try:
         onto_file = open(ontopath, 'wb+')
         onto.save(file=onto_file, format="rdfxml")
+        onto_file.close()
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
@@ -479,7 +480,6 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
         onto.destroy()
         del onto
-        onto_file.close()
         del owlready2
         del onto_file
     except:
