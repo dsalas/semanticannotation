@@ -443,7 +443,7 @@ def updateConcepts(docId,ontoId,concepts):
     ontopath = coruja_database.getOntology(str(ontoId))
     import owlready2
     onto = owlready2.get_ontology("file://" + ontopath)
-    log("updateConcepts(): Onto world debug after get: " + str(onto.world.ontologies))
+    log("updateConcepts(): Onto world debug after load: " + str(onto.world.ontologies))
     try:
         onto.load()
         log("updateConcepts(): Load ontology " + ontopath)
@@ -471,19 +471,19 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Document not found id="+str(docId))
     status = 1
     try:
-        onto_file = open(ontopath, 'wb+')
-        onto.save(file=onto_file, format="rdfxml")
-        onto_file.close()
+        # onto_file = open(ontopath, 'wb+')
+        onto.save(file=ontopath, format="rdfxml")
+        #onto_file.close()
         log("updateConcepts(): Saved ontology to " + ontopath)
     except:
         log("updateConcepts(): Error saving ontology " + ontopath)
         status = 0
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
+        #del onto_file
         onto.destroy()
         del onto
         del owlready2
-        del onto_file
     except:
         log("updateConcepts(): Error destroying ontology:" + onto.base_iri)
     gc.collect()
