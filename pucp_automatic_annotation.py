@@ -480,9 +480,12 @@ def updateConcepts(docId,ontoId,concepts):
 
     if status == 1:
         try:
-            # onto_file = open(ontopath, 'wb+')
-            onto.save(file=ontopath, format="rdfxml")
-            #onto_file.close()
+            onto_file = open(ontopath, 'wb+')
+            #onto.save(file=ontopath, format="rdfxml")
+            onto.save(file=onto_file, format="rdfxml")
+            onto_file.flush()
+            onto_file.close()
+            del onto_file
             log("updateConcepts(): Saved ontology to " + ontopath)
         except:
             log("updateConcepts(): Error saving ontology " + ontopath)
@@ -491,7 +494,6 @@ def updateConcepts(docId,ontoId,concepts):
         log("updateConcepts(): Empty ontology loaded " + ontopath)
     try:
         log("updateConcepts(): Destroying ontology " + onto.base_iri)
-        #del onto_file
         onto.destroy()
         del onto
         del owlready2
